@@ -1,9 +1,15 @@
+# Template lifted from langchain examples
+# https://github.com/langchain-ai/langserve/blob/main/examples/chat_with_persistence/server.py
+
+import os
+from dotenv import load_dotenv
+
 import re
 from pathlib import Path
 from typing import Callable, Union
 
 from fastapi import FastAPI, HTTPException
-from langchain.chat_models import ChatAnthropic
+from langchain_openai import ChatOpenAI
 from langchain.memory import FileChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -12,6 +18,7 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from langserve import add_routes
 from langserve.pydantic_v1 import BaseModel, Field
 
+load_dotenv()
 
 def _is_valid_identifier(value: str) -> bool:
     """Check if the session ID is in a valid format."""
@@ -66,7 +73,7 @@ prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
-chain = prompt | ChatAnthropic(model="claude-2")
+chain = prompt | ChatOpenAI()
 
 
 class InputChat(BaseModel):
