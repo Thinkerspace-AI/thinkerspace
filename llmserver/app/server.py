@@ -18,7 +18,7 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from langserve import add_routes
 from langserve.pydantic_v1 import BaseModel, Field
 
-load_dotenv()
+load_dotenv() # NOTE: OPENAI_API_KEY of .env is on Paolo's machine
 
 def _is_valid_identifier(value: str) -> bool:
     """Check if the session ID is in a valid format."""
@@ -73,7 +73,7 @@ prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
-chain = prompt | ChatOpenAI()
+chain = prompt | ChatOpenAI(model='gpt-3.5-turbo')
 
 
 class InputChat(BaseModel):
