@@ -1,7 +1,7 @@
 import uuid
 from langserve import RemoteRunnable
 
-chat = RemoteRunnable("http://localhost:8000/")
+chat = RemoteRunnable("http://localhost:8000/openai")
 session_id = str(uuid.uuid4())
 
 while True:

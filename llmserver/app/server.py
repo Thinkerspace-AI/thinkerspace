@@ -63,6 +63,9 @@ app = FastAPI(
     description="Spin up a simple api server using Langchain's Runnable interfaces",
 )
 
+@app.get("/ping")
+async def root():
+    return {"message": "Pong!"}
 
 # Declare a chain
 prompt = ChatPromptTemplate.from_messages(
@@ -102,6 +105,7 @@ chain_with_history = RunnableWithMessageHistory(
 add_routes(
     app,
     chain_with_history,
+    path="/openai"
 )
 
 if __name__ == "__main__":
