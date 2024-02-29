@@ -143,6 +143,7 @@ sqlalchemy==2.0.27
     # via
     #   langchain
     #   langchain-community
+sse_starlette
 starlette==0.36.3
     # via fastapi
 tenacity==8.2.3
