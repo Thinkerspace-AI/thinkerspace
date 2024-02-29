@@ -77,3 +77,6 @@ We also expose port 8080 with the `-p 8080:8080` option.
 ```shell
 docker run -e OPENAI_API_KEY=$OPENAI_API_KEY -p 8080:8080 my-langserve-app
 ```
+
+### Github Unit Test
+Github Actions runs this on a local server and uses pytest acting as a client.
