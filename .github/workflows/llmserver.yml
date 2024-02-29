@@ -42,4 +42,4 @@ jobs:
         sleep 5  # Wait for the server to start (adjust if needed)
     - name: Test with pytest
       run: |
-        pytest 
+        pytest llmserver/app/test_llmserver.py
