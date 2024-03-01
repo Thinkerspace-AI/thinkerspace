@@ -77,16 +77,9 @@
   <h6>Share your vision.</h6>
 
   <textarea name="q3" id="q3" rows="10" placeholder="Type here..."></textarea>
-  <button on:click={() => nextSlide(3)}>Next</button>
+  <button on:click={() => submit(3)}>Submit</button>
 </div>
 <div class="slide" id="slide4">
-  <h1>Do you wanna build a snowman?</h1>
-  <h6>Come on let's go and play</h6>
-
-  <textarea name="q4" id="q4" rows="10" placeholder="Type here..."></textarea>
-  <button on:click={() => submit(4)}>Submit</button>
-</div>
-<div class="slide" id="slide5">
   <h1>Here's what I understood:</h1>
   <p id="response"></p>
 </div>
