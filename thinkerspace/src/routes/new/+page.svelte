@@ -49,22 +49,22 @@
 </script>
 
 <div class="slide" id="slide1">
-  <h1>What is your big idea?</h1>
-  <h6>Explain it in a few words</h6>
+  <h1>What problem are you trying to solve?</h1>
+  <h6>Explain the specific pain points or challenges you want to address.</h6>
 
   <textarea name="q1" id="q1" rows="10" placeholder="Type here..."></textarea>
   <button on:click={() => nextSlide(1)}>Next</button>
 </div>
 <div class="slide" id="slide2">
-  <h1>What is your business model?</h1>
-  <h6>A business model is something something</h6>
+  <h1>Who is your ideal customer?</h1>
+  <h6>Dive into the demographics and behaviors of your target audience.</h6>
 
   <textarea name="q2" id="q2" rows="10" placeholder="Type here..."></textarea>
   <button on:click={() => nextSlide(2)}>Next</button>
 </div>
 <div class="slide" id="slide3">
-  <h1>Meow meow meow meow?</h1>
-  <h6>Meow meow meow</h6>
+  <h1>What is your big idea?</h1>
+  <h6>Share your vision.</h6>
 
   <textarea name="q3" id="q3" rows="10" placeholder="Type here..."></textarea>
   <button on:click={() => nextSlide(3)}>Next</button>
