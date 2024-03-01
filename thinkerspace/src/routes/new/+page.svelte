@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { RemoteRunnable } from "@langchain/core/runnables/remote";
   // import QuestionSlide from "$lib/components/QuestionSlide.svelte";
 
   function nextSlide(n: number) {
@@ -25,28 +26,55 @@
     });
   }
 
-  function submit() {
-    console.log("Submit");
+  async function submit(n: number) {
+    console.log("Submitting");
+
+    const chain = new RemoteRunnable({
+      url: "http://localhost:8000/openai",
+    });
+
+    const answers = Array.from(document.getElementsByTagName("textarea")).map(
+      (textarea) => textarea.value
+    );
+
+    const result = (await chain.invoke(
+      {
+        human_input: answers.join("\n"),
+      },
+      {
+        configurable: {
+          session_id: "57988dfa-34bf-4ac7-838f-624ec550a802",
+        },
+      }
+    )) as any;
+
+    console.log(result);
+
+    const resText = document.getElementById("response") as HTMLParagraphElement;
+
+    resText.innerText = result.content;
+
+    nextSlide(n);
   }
 </script>
 
 <div class="slide" id="slide1">
-  <h1>What is your big idea?</h1>
-  <h6>Explain it in a few words</h6>
+  <h1>What problem are you trying to solve?</h1>
+  <h6>Explain the specific pain points or challenges you want to address.</h6>
 
   <textarea name="q1" id="q1" rows="10" placeholder="Type here..."></textarea>
   <button on:click={() => nextSlide(1)}>Next</button>
 </div>
 <div class="slide" id="slide2">
-  <h1>What is your business model?</h1>
-  <h6>A business model is something something</h6>
+  <h1>Who is your ideal customer?</h1>
+  <h6>Dive into the demographics and behaviors of your target audience.</h6>
 
   <textarea name="q2" id="q2" rows="10" placeholder="Type here..."></textarea>
   <button on:click={() => nextSlide(2)}>Next</button>
 </div>
 <div class="slide" id="slide3">
-  <h1>Meow meow meow meow?</h1>
-  <h6>Meow meow meow</h6>
+  <h1>What is your big idea?</h1>
+  <h6>Share your vision.</h6>
 
   <textarea name="q3" id="q3" rows="10" placeholder="Type here..."></textarea>
   <button on:click={() => nextSlide(3)}>Next</button>
@@ -56,27 +84,11 @@
   <h6>Come on let's go and play</h6>
 
   <textarea name="q4" id="q4" rows="10" placeholder="Type here..."></textarea>
-  <button on:click={() => nextSlide(4)}>Next</button>
+  <button on:click={() => submit(4)}>Submit</button>
 </div>
 <div class="slide" id="slide5">
   <h1>Here's what I understood:</h1>
-  <p>
-    <span class="agent">CONVENER:</span> Your business idea is lorem ipsum dolor
-    sit amet. I've identified areas that you'd need to build on:
-  </p>
-  <p>
-    <span class="agent">CONVENER:</span> Your business idea is lorem ipsum dolor
-    sit amet
-  </p>
-  <p>
-    <span class="agent">CONVENER:</span> Your business idea is lorem ipsum dolor
-    sit amet
-  </p>
-  <p>
-    <span class="agent">CONVENER:</span> Your business idea is lorem ipsum dolor
-    sit amet
-  </p>
-  <button on:click={submit}>Submit</button>
+  <p id="response"></p>
 </div>
 
 <style>

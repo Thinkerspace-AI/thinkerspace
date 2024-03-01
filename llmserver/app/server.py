@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Callable, Union
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from langchain_openai import ChatOpenAI
 from langchain.memory import FileChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
@@ -17,6 +18,7 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 
 from langserve import add_routes
 from langserve.pydantic_v1 import BaseModel, Field
+
 
 load_dotenv() # NOTE: OPENAI_API_KEY of .env is on Paolo's machine
 
@@ -61,6 +63,16 @@ app = FastAPI(
     title="LangChain Server",
     version="1.0",
     description="Spin up a simple api server using Langchain's Runnable interfaces",
+)
+
+# Set all CORS enabled origins
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 @app.get("/ping")
