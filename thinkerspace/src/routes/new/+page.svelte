@@ -39,7 +39,7 @@
 
     const result = (await chain.invoke(
       {
-        human_input: answers.join("\n"),
+        human_input: "Please give me 3 short paths of recommendations based on the Lean Canvas framework to validate my business idea:\n" + answers.join("\n"),
       },
       {
         configurable: {
