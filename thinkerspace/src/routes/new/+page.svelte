@@ -29,24 +29,32 @@
   async function submit(n: number) {
     console.log("Submitting");
 
-    nextSlide(n);
-
     const chain = new RemoteRunnable({
       url: "http://localhost:8000/openai",
     });
 
-    const result = await chain.invoke(
+    const answers = Array.from(document.getElementsByTagName("textarea")).map(
+      (textarea) => textarea.value
+    );
+
+    const result = (await chain.invoke(
       {
-        human_input: "cats",
+        human_input: answers.join("\n"),
       },
       {
         configurable: {
           session_id: "57988dfa-34bf-4ac7-838f-624ec550a802",
         },
       }
-    );
+    )) as any;
 
     console.log(result);
+
+    const resText = document.getElementById("response") as HTMLParagraphElement;
+
+    resText.innerText = result.content;
+
+    nextSlide(n);
   }
 </script>
 
@@ -80,22 +88,7 @@
 </div>
 <div class="slide" id="slide5">
   <h1>Here's what I understood:</h1>
-  <p>
-    <span class="agent">CONVENER:</span> Your business idea is lorem ipsum dolor
-    sit amet. I've identified areas that you'd need to build on:
-  </p>
-  <p>
-    <span class="agent">CONVENER:</span> Your business idea is lorem ipsum dolor
-    sit amet
-  </p>
-  <p>
-    <span class="agent">CONVENER:</span> Your business idea is lorem ipsum dolor
-    sit amet
-  </p>
-  <p>
-    <span class="agent">CONVENER:</span> Your business idea is lorem ipsum dolor
-    sit amet
-  </p>
+  <p id="response"></p>
 </div>
 
 <style>
