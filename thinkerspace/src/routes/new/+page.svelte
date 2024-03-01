@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { RemoteRunnable } from "@langchain/core/runnables/remote";
   // import QuestionSlide from "$lib/components/QuestionSlide.svelte";
 
   function nextSlide(n: number) {
@@ -25,8 +26,25 @@
     });
   }
 
-  function submit() {
-    console.log("Submit");
+  async function submit(n: number) {
+    console.log("Submitting");
+
+    nextSlide(n);
+
+    const result = await fetch("http://localhost:8000/ping");
+
+    // const chain = new RemoteRunnable({
+    //   url: "http://localhost:8000/openai",
+    // });
+
+    // const result = await chain.invoke({
+    //   human_input: "cats",
+    //   configurable: {
+    //     session_id: "57988dfa-34bf-4ac7-838f-624ec550a802",
+    //   },
+    // });
+
+    console.log(result);
   }
 </script>
 
@@ -56,7 +74,7 @@
   <h6>Come on let's go and play</h6>
 
   <textarea name="q4" id="q4" rows="10" placeholder="Type here..."></textarea>
-  <button on:click={() => nextSlide(4)}>Next</button>
+  <button on:click={() => submit(4)}>Submit</button>
 </div>
 <div class="slide" id="slide5">
   <h1>Here's what I understood:</h1>
@@ -76,7 +94,7 @@
     <span class="agent">CONVENER:</span> Your business idea is lorem ipsum dolor
     sit amet
   </p>
-  <button on:click={submit}>Submit</button>
+  <button on:click={() => nextSlide(5)}>Next</button>
 </div>
 
 <style>
