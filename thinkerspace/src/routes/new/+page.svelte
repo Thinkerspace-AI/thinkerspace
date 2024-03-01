@@ -31,18 +31,20 @@
 
     nextSlide(n);
 
-    const result = await fetch("http://localhost:8000/ping");
+    const chain = new RemoteRunnable({
+      url: "http://localhost:8000/openai",
+    });
 
-    // const chain = new RemoteRunnable({
-    //   url: "http://localhost:8000/openai",
-    // });
-
-    // const result = await chain.invoke({
-    //   human_input: "cats",
-    //   configurable: {
-    //     session_id: "57988dfa-34bf-4ac7-838f-624ec550a802",
-    //   },
-    // });
+    const result = await chain.invoke(
+      {
+        human_input: "cats",
+      },
+      {
+        configurable: {
+          session_id: "57988dfa-34bf-4ac7-838f-624ec550a802",
+        },
+      }
+    );
 
     console.log(result);
   }
@@ -94,7 +96,6 @@
     <span class="agent">CONVENER:</span> Your business idea is lorem ipsum dolor
     sit amet
   </p>
-  <button on:click={() => nextSlide(5)}>Next</button>
 </div>
 
 <style>
