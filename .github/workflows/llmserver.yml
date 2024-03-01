@@ -41,5 +41,7 @@ jobs:
         python3 llmserver/app/server.py &
         sleep 5  # Wait for the server to start (adjust if needed)
     - name: Test with pytest
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       run: |
         pytest llmserver/app/test_llmserver.py
