@@ -1,7 +1,6 @@
 # Template lifted from langchain examples
 # https://github.com/langchain-ai/langserve/blob/main/examples/chat_with_persistence/server.py
 
-import os
 from dotenv import load_dotenv
 
 import re
@@ -18,6 +17,9 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 
 from langserve import add_routes
 from langserve.pydantic_v1 import BaseModel, Field
+
+from google.cloud import firestore
+from langchain_google_firestore import FirestoreChatMessageHistory
 
 
 load_dotenv() # NOTE: OPENAI_API_KEY of .env is on Paolo's machine
@@ -82,7 +84,13 @@ async def root():
 # Declare a chain
 prompt = ChatPromptTemplate.from_messages(
     [
-        ("system", "You're an assistant by the name of Bob."),
+        ("system", """You are an agent tasked with recommending three experts to consult on validating a user’s business/startup idea using the Lean Canvas. You have information about each agent’s expertise. Provide your top three recommendations and explain why each agent is suitable for the task.
+Agents:
+Marketing Specialist: The marketing specialist will help you analyze your target audience, identify market trends, and assess the demand for your product or service. They’ll guide you in crafting effective messaging and positioning strategies to reach potential customers.
+UI/UX Designer: The UI/UX designer will focus on enhancing the user experience of your product or app. They’ll ensure that your Lean Canvas translates into an engaging and user-friendly design, optimizing usability, navigation, and aesthetics.
+Technical Engineer: The technical engineer will assess the feasibility of your startup idea from a technical standpoint. They’ll advise on the best technologies, scalability, and security measures. Their insights will be crucial for building a robust product.
+Product Manager: The product manager plays a critical role in validating business ideas by ensuring alignment with customer needs, market demand, and feasibility. They guide the product development process and help you avoid building something that the market doesn’t need.
+Financial Analyst: The financial analyst uses their expertise to validate business ideas, ensuring alignment with financial goals and market realities. Their insights are valuable for entrepreneurs seeking funding or planning strategic moves."""),
         MessagesPlaceholder(variable_name="history"),
         ("human", "{human_input}"),
     ]
@@ -117,7 +125,7 @@ chain_with_history = RunnableWithMessageHistory(
 add_routes(
     app,
     chain_with_history,
-    path="/openai"
+    path="/create"
 )
 
 if __name__ == "__main__":

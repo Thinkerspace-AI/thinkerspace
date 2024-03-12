@@ -39,11 +39,12 @@
 
     const result = (await chain.invoke(
       {
-        human_input: "Please give me 3 short paths of recommendations based on the Lean Canvas framework to validate my business idea:\n" + answers.join("\n"),
+        human_input: answers.join("\n"),
       },
       {
         configurable: {
           session_id: "57988dfa-34bf-4ac7-838f-624ec550a802",
+          agent: "convener"
         },
       }
     )) as any;
