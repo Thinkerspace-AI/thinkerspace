@@ -1,2 +1,2 @@
 .env
-llmserver/app/chat_histories
+llmserver/chat_histories
