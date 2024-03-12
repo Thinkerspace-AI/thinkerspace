@@ -30,7 +30,7 @@
     console.log("Submitting");
 
     const chain = new RemoteRunnable({
-      url: "http://localhost:8000/openai",
+      url: "http://localhost:8000/convene",
     });
 
     const answers = Array.from(document.getElementsByTagName("textarea")).map(
@@ -53,7 +53,7 @@
 
     const resText = document.getElementById("response") as HTMLParagraphElement;
 
-    resText.innerText = result.content;
+    resText.innerText = result;
 
     nextSlide(n);
   }
