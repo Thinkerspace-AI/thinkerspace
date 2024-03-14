@@ -46,6 +46,12 @@ add_routes(
     path="/convene"
 )
 
+add_routes(
+    app,
+    agents.create_configurable_chain(),
+    path="/agent",
+)
+
 if __name__ == "__main__":
     import uvicorn
 
