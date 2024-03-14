@@ -11,6 +11,7 @@ from langchain.memory import FileChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory, Runnable
+from langchain_core.runnables import RunnablePassthrough
 
 from langserve import add_routes
 from langserve.pydantic_v1 import BaseModel, Field
@@ -30,12 +31,8 @@ load_dotenv() # NOTE: OPENAI_API_KEY of .env is on Paolo's machine
 ### AGENT OUTPUT PARSE FORMATS ###
 
 class ConvenerRecommendation(BaseModel):
-    agent1: str = Field(description="Top 1 priority agent to recommend")
-    agent1_reason: str = Field(description="Why you want to recommend agent 1")
-    agent2: str = Field(description="Top 2 priority agent to recommend")
-    agent2_reason: str = Field(description="Why you want to recommend agent 2")
-    agent3: str = Field(description="Top 2 priority agent to recommend")
-    agent3_reason: str = Field(description="Why you want to recommend agent 2")
+    agents: List[str] = Field(description="Top 3 agents you want to recommend")
+    reasons: List[str] = Field(description="Reasons why you recommend each of them from 1 to 3")
 
 
 ### AGENT FUNCTIONS ###
@@ -68,12 +65,7 @@ def create_session_factory(
                 "hyphens, and underscores.",
             )
         chat_history = FirestoreChatMessageHistory(
-            session_id=session_id, collection="sessions"
-        )
-        db = firestore.Client(project="geometric-sled-417002") # Needs fixing
-        doc_ref = db.collection("sessions").document(session_id)
-        doc_ref.update(
-            {"agent": agent}
+            session_id=session_id, collection="SessionHistories"
         )
 
         return chat_history
@@ -84,14 +76,21 @@ def create_session_factory(
 ### CONVENER CHAIN ###
 
 def create_convener_chain() -> Runnable:
+    root_dir = Path(__file__).resolve().parent
     parser = JsonOutputParser(pydantic_object=ConvenerRecommendation)
 
-    prompt = load_prompt("app/prompts/convener.json")
+    prompt = load_prompt(root_dir / "prompts/convener.json")
     prompt = prompt.partial(format_instructions=parser.get_format_instructions())
 
     chain = prompt | ChatOpenAI(model='gpt-3.5-turbo') | parser
-
-    return chain
+    chain_with_history = RunnableWithMessageHistory(
+        chain,
+        create_session_factory("convener"),
+        input_messages_key="human_input",
+        output_messages_key="agents",
+        history_messages_key="history",
+    )
+    return chain_with_history
 
 if __name__ == '__main__':
     create_convener_chain()
