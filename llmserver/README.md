@@ -87,6 +87,5 @@ In the `llmserver` working directory, run the following commands:
 ```shell
 pipreqs --savepath=requirements.in
 pip-compile
-docker build -t llm-app
-docker run --env-file ./.env llm-app
+gcloud run deploy llm-app --port 8080 --source . --project geometric-sled-417002
 ```

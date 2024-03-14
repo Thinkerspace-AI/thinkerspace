@@ -30,7 +30,7 @@
     console.log("Submitting");
 
     const chain = new RemoteRunnable({
-      url: "http://localhost:8000/agent",
+      url: "https://llm-app-whtpnrbuea-as.a.run.app/agent",
     });
 
     const answers = Array.from(document.getElementsByTagName("textarea")).map(
@@ -61,7 +61,7 @@
     }
 
     const createResult = (await fetch(
-      "http://localhost:8000/create/",
+      "https://llm-app-whtpnrbuea-as.a.run.app/create/",
       {
         method: 'POST',
         headers: {
