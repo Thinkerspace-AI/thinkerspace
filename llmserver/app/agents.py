@@ -4,26 +4,25 @@ import re
 from pathlib import Path
 from typing import Callable, Union
 
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import HTTPException
 from langchain_openai import ChatOpenAI
 from langchain.memory import FileChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory, Runnable
-from langchain_core.runnables import RunnablePassthrough
 
-from langserve import add_routes
 from langserve.pydantic_v1 import BaseModel, Field
 
 from google.cloud import firestore
 from langchain_google_firestore import FirestoreChatMessageHistory
 
-from typing import List
+from typing import List, Dict
 
 from langchain.prompts import PromptTemplate, load_prompt
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.pydantic_v1 import BaseModel, Field
+
+from agentutils import load_agent_options
 
 load_dotenv() # NOTE: OPENAI_API_KEY of .env is on Paolo's machine
 
@@ -75,7 +74,7 @@ def create_session_factory(
 
 ### CONVENER CHAIN ###
 
-def create_convener_chain() -> Runnable:
+def create_convener_chain() -> RunnableWithMessageHistory:
     root_dir = Path(__file__).resolve().parent
     parser = JsonOutputParser(pydantic_object=ConvenerRecommendation)
 
@@ -92,5 +91,16 @@ def create_convener_chain() -> Runnable:
     )
     return chain_with_history
 
+def create_configurable_chain() -> RunnableWithMessageHistory:
+    prompt = PromptTemplate(
+        template="Evaluate the business idea.\n{history}\n{human_input}",
+        input_variables=[
+            "human_input",
+            "history"
+        ]
+    ).configurable_fields(
+        template=load_agent_options()
+    )
+
 if __name__ == '__main__':
-    create_convener_chain()
+    create_configurable_chain()
