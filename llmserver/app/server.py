@@ -27,7 +27,7 @@ class SessionCreation(BaseModel):
     root: str | None = None
     parent: str | None = None
 
-load_dotenv() # NOTE: OPENAI_API_KEY of .env is on Paolo's machine
+# load_dotenv() # NOTE: OPENAI_API_KEY of .env is on Paolo's machine
 
 app = FastAPI(
     title="LangChain Server",

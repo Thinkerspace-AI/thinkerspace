@@ -24,8 +24,7 @@ from langchain_core.pydantic_v1 import BaseModel, Field
 
 from agentutils import load_agent_options
 
-load_dotenv() # NOTE: OPENAI_API_KEY of .env is on Paolo's machine
-
+# load_dotenv() # NOTE: OPENAI_API_KEY of .env is on Paolo's machine
 
 ### AGENT OUTPUT PARSE FORMATS ###
 
