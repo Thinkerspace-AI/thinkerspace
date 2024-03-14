@@ -30,6 +30,7 @@
   let slides: Element[];
 
   onMount(() => {
+    window.scrollTo(0, 0);
     slides = Array.from(slidesContainer.children);
   });
 
