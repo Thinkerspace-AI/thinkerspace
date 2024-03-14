@@ -17,7 +17,15 @@ from langserve.pydantic_v1 import BaseModel, Field
 from google.cloud import firestore
 from langchain_google_firestore import FirestoreChatMessageHistory
 
+from pydantic import BaseModel
+
 import agents
+
+class SessionCreation(BaseModel):
+    agent: str
+    userid: str
+    root: str | None = None
+    parent: str | None = None
 
 load_dotenv() # NOTE: OPENAI_API_KEY of .env is on Paolo's machine
 
@@ -53,21 +61,16 @@ add_routes(
     path="/agent",
 )
 
-@app.get("/create")
-async def create_session(
-    agent: str, 
-    user: str | None = "test",
-    root: str | None = None, 
-    parent: str | None = None
-):
-    session_id = uuid.uuid4()
+@app.post("/create", status_code=201)
+async def create_session(request: SessionCreation):
+    session_id = str(uuid.uuid4())
     db = firestore.Client(project="geometric-sled-417002")
-    if parent and root:
-        new_ref = db.collection("sessions").document(root).collection("children").document(session_id)
-        par_ref = db.collection("sessions").document(root).collection("children").document(parent)
+    if request.parent and request.root:
+        new_ref = db.collection("sessions").document(request.root).collection("children").document(session_id)
+        par_ref = db.collection("sessions").document(request.root).collection("children").document(request.parent)
         par_ref.update(
             {
-                "children": # Update the array of children IDs
+                "children": firestore.arrayUnion([session_id]) # Update the array of children IDs
             }
         )
     else:
@@ -75,14 +78,13 @@ async def create_session(
 
     new_ref.set(
         {
-            "agent": agent,
-            "user": user,
-            "root": parent,
+            "agent": request.agent,
+            "userid": request.userid,
+            "root": request.parent,
             "parent": None,
         },
     )
-
-
+    
     return {"id": session_id}
 
 if __name__ == "__main__":
