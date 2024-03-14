@@ -1,2 +1,2 @@
 .env
-llmserver/secrets
+llmserver/app/secrets
