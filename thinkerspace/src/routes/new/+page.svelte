@@ -55,6 +55,24 @@
 
     resText.innerText = result;
 
+    const data = {
+      agent: "UI/UX Designer",
+      userid: "test-user"
+    }
+
+    const createResult = (await fetch(
+      "http://localhost:8000/create/",
+      {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      }
+    )).json()
+
+    console.log(createResult)
+
     nextSlide(n);
   }
 </script>
