@@ -102,5 +102,15 @@ def create_configurable_chain() -> RunnableWithMessageHistory:
         template=load_agent_options()
     )
 
+    chain = prompt | ChatOpenAI(model='gpt-3.5-turbo')
+    chain_with_history = RunnableWithMessageHistory(
+        chain,
+        create_session_factory("configurable"),
+        input_messages_key="human_input",
+        history_messages_key="history",
+    )
+
+    return chain_with_history
+
 if __name__ == '__main__':
     create_configurable_chain()

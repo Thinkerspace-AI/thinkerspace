@@ -37,7 +37,7 @@ app.add_middleware(
 )
 
 @app.get("/ping")
-async def root():
+async def ping():
     return {"message": "Pong!"}
 
 add_routes(
