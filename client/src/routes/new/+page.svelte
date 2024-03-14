@@ -1,125 +1,152 @@
 <script lang="ts">
   import { RemoteRunnable } from "@langchain/core/runnables/remote";
-  // import QuestionSlide from "$lib/components/QuestionSlide.svelte";
+
+  import { onMount } from "svelte";
+
+  import TitleDescription from "$lib/components/TitleDescription.svelte";
+  import Slide from "$lib/components/Slide.svelte";
+  import QuestionContent from "$lib/components/QuestionContent.svelte";
+
+  const questions = [
+    {
+      question: "What problem are you trying to solve?",
+      description:
+        "Explain the specific pain points or challenges you want to address.",
+    },
+    {
+      question: "Who is your ideal customer?",
+      description:
+        "Dive into the demographics and behaviors of your target audience.",
+    },
+    {
+      question: "What is your big idea?",
+      description: "Share your vision.",
+    },
+  ];
+
+  let answers: string[] = [];
+
+  let slidesContainer: HTMLDivElement;
+  let slides: Element[];
+
+  onMount(() => {
+    slides = Array.from(slidesContainer.children);
+  });
 
   function nextSlide(n: number) {
-    const textarea = document.getElementById(`q${n}`) as HTMLTextAreaElement;
+    const currentSlide = slides[n];
+    const currentInput = currentSlide.querySelector(
+      "input"
+    ) as HTMLInputElement;
 
-    if (!textarea.value) {
-      textarea.style.boxShadow = "0 0 24px var(--20)";
-      textarea.focus();
-      return;
-    }
+    answers = [...answers, currentInput.value];
 
-    const next = document.getElementById(`slide${n + 1}`);
+    const nextSlide = slides[n + 1];
 
-    if (!next) {
-      console.log("No next slide");
-      return;
-    }
+    if (nextSlide) {
+      nextSlide.scrollIntoView({ behavior: "smooth" });
 
-    next.style.display = "block";
+      const nextInput = (nextSlide.querySelector("input") ||
+        nextSlide.querySelector("button")) as HTMLElement;
 
-    window.scrollBy({
-      top: window.innerHeight,
-      behavior: "smooth",
-    });
-  }
-
-  async function submit(n: number) {
-    console.log("Submitting");
-
-    const chain = new RemoteRunnable({
-      url: "http://localhost:8000/openai",
-    });
-
-    const answers = Array.from(document.getElementsByTagName("textarea")).map(
-      (textarea) => textarea.value
-    );
-
-    const result = (await chain.invoke(
-      {
-        human_input: answers.join("\n"),
-      },
-      {
-        configurable: {
-          session_id: "57988dfa-34bf-4ac7-838f-624ec550a802",
-        },
+      if (nextInput) {
+        setTimeout(() => {
+          nextInput.focus();
+        }, 500);
       }
-    )) as any;
-
-    console.log(result);
-
-    const resText = document.getElementById("response") as HTMLParagraphElement;
-
-    resText.innerText = result.content;
-
-    nextSlide(n);
+    }
   }
+
+  function keydown(e: KeyboardEvent) {
+    if (e.key === "Tab") {
+      e.preventDefault();
+    }
+  }
+
+  let response = "";
+
+  async function test(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve("done!");
+      }, 1000);
+    });
+  }
+
+  async function submit() {
+    console.log("Submitting");
+    console.log(answers);
+
+    if (slides[slides.length - 1]) {
+      slides[slides.length - 1].scrollIntoView({ behavior: "smooth" });
+    }
+
+    console.log(response);
+    response = await test();
+    console.log(response);
+  }
+
+  // async function submit(n: number) {
+  //   console.log("Submitting");
+
+  //   const chain = new RemoteRunnable({
+  //     url: "http://localhost:8000/openai",
+  //   });
+
+  //   const answers = Array.from(document.getElementsByTagName("textarea")).map(
+  //     (textarea) => textarea.value
+  //   );
+
+  //   const result = (await chain.invoke(
+  //     {
+  //       human_input: answers.join("\n"),
+  //     },
+  //     {
+  //       configurable: {
+  //         session_id: "57988dfa-34bf-4ac7-838f-624ec550a802",
+  //       },
+  //     }
+  //   )) as any;
+
+  //   console.log(result);
+
+  //   const resText = document.getElementById("response") as HTMLParagraphElement;
+
+  //   resText.innerText = result.content;
+  // }
 </script>
 
-<div class="slide" id="slide1">
-  <h1>What problem are you trying to solve?</h1>
-  <h6>Explain the specific pain points or challenges you want to address.</h6>
+<div class="slides-container" bind:this={slidesContainer}>
+  {#each Object.entries(questions) as [id, { question, description }], i (id)}
+    <Slide>
+      <QuestionContent {question} {description} next={() => nextSlide(i)} />
+    </Slide>
+  {/each}
+  <Slide>
+    <h1>Here's what you said</h1>
+    <h6>Let's make sure we got it right</h6>
 
-  <textarea name="q1" id="q1" rows="10" placeholder="Type here..."></textarea>
-  <button on:click={() => nextSlide(1)}>Next</button>
-</div>
-<div class="slide" id="slide2">
-  <h1>Who is your ideal customer?</h1>
-  <h6>Dive into the demographics and behaviors of your target audience.</h6>
+    {#each answers as answer, i}
+      <TitleDescription title={questions[i].question} description={answer} />
+    {/each}
 
-  <textarea name="q2" id="q2" rows="10" placeholder="Type here..."></textarea>
-  <button on:click={() => nextSlide(2)}>Next</button>
-</div>
-<div class="slide" id="slide3">
-  <h1>What is your big idea?</h1>
-  <h6>Share your vision.</h6>
-
-  <textarea name="q3" id="q3" rows="10" placeholder="Type here..."></textarea>
-  <button on:click={() => nextSlide(3)}>Next</button>
-</div>
-<div class="slide" id="slide4">
-  <h1>Do you wanna build a snowman?</h1>
-  <h6>Come on let's go and play</h6>
-
-  <textarea name="q4" id="q4" rows="10" placeholder="Type here..."></textarea>
-  <button on:click={() => submit(4)}>Submit</button>
-</div>
-<div class="slide" id="slide5">
-  <h1>Here's what I understood:</h1>
-  <p id="response"></p>
+    <button on:keydown={keydown} on:click={submit}>Next</button>
+  </Slide>
+  <Slide>
+    <h1>Here's what I think</h1>
+    {#await response}
+      <p>Loading...</p>
+    {:then res}
+      <p>{res}</p>
+    {:catch error}
+      <p>{error}</p>
+    {/await}
+  </Slide>
 </div>
 
 <style>
-  /* :global(body) {
+  :global(body) {
     overflow: hidden;
-  } */
-
-  .slide {
-    height: 100vh;
-    width: 100%;
-
-    padding: 240px;
-  }
-
-  .slide:not(.slide:first-of-type) {
-    display: none;
-  }
-
-  textarea {
-    width: 100%;
-    padding: 24px;
-    margin-top: 24px;
-    resize: none;
-
-    border: none;
-    box-shadow: 0 0 24px rgba(0, 0, 0, 0.1);
-  }
-
-  textarea:focus {
-    outline: none;
-    scale: 1.02;
   }
 
   button {
