@@ -30,7 +30,7 @@
     console.log("Submitting");
 
     const chain = new RemoteRunnable({
-      url: "http://localhost:8000/convene",
+      url: "http://localhost:8000/agent",
     });
 
     const answers = Array.from(document.getElementsByTagName("textarea")).map(
@@ -44,7 +44,7 @@
       {
         configurable: {
           session_id: "57988dfa-34bf-4ac7-838f-624ec550a802",
-          agent: "convener"
+          agent: "UI/UX Designer"
         },
       }
     )) as any;

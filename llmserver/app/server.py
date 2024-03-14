@@ -4,6 +4,7 @@
 from dotenv import load_dotenv
 
 import re
+import uuid
 from pathlib import Path
 from typing import Callable, Union
 
@@ -51,6 +52,38 @@ add_routes(
     agents.create_configurable_chain(),
     path="/agent",
 )
+
+@app.get("/create")
+async def create_session(
+    agent: str, 
+    user: str | None = "test",
+    root: str | None = None, 
+    parent: str | None = None
+):
+    session_id = uuid.uuid4()
+    db = firestore.Client(project="geometric-sled-417002")
+    if parent and root:
+        new_ref = db.collection("sessions").document(root).collection("children").document(session_id)
+        par_ref = db.collection("sessions").document(root).collection("children").document(parent)
+        par_ref.update(
+            {
+                "children": # Update the array of children IDs
+            }
+        )
+    else:
+        new_ref = db.collection("sessions").document(session_id)
+
+    new_ref.set(
+        {
+            "agent": agent,
+            "user": user,
+            "root": parent,
+            "parent": None,
+        },
+    )
+
+
+    return {"id": session_id}
 
 if __name__ == "__main__":
     import uvicorn
