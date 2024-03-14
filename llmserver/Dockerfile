@@ -10,9 +10,7 @@ COPY ./app ./app
 
 COPY ./package[s] ./packages
 
-COPY ./app/secrets/geometric-sled/gcp-service-account-key.json ./secrets/gcp-service-account-key.json
-
-ENV GOOGLE_APPLICATION_CREDENTIALS=/secrets/service-account-key.json
+ENV GOOGLE_APPLICATION_CREDENTIALS=/app/secrets/gcp-service-account-key.json
 
 EXPOSE 8080
 
