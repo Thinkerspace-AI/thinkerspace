@@ -80,3 +80,13 @@ docker run -e OPENAI_API_KEY=$OPENAI_API_KEY -p 8080:8080 my-langserve-app
 
 ### Github Unit Test
 Github Actions runs this on a local server and uses pytest acting as a client.
+
+### Instructions for Building
+
+In the `llmserver` working directory, run the following commands:
+```shell
+pipreqs --savepath=requirements.in
+pip-compile
+docker build -t llm-app
+docker run --env-file ./.env llm-app
+```

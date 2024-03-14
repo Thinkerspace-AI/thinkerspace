@@ -7,4 +7,5 @@ langserve==0.0.51
 protobuf==4.25.3
 pydantic==2.6.4
 python-dotenv==1.0.1
+sse_starlette==1.8.2
 uvicorn==0.28.0

@@ -1,6 +1,6 @@
 FROM python:3.11-slim
 
-WORKDIR /code
+WORKDIR /app
 
 COPY ./requirements.txt ./
 
@@ -9,8 +9,6 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt
 COPY ./app ./app
 
 COPY ./package[s] ./packages
-
-ENV GOOGLE_APPLICATION_CREDENTIALS=/app/secrets/gcp-service-account-key.json
 
 EXPOSE 8080
 

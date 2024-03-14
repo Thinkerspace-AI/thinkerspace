@@ -17,6 +17,7 @@ anyio==4.3.0
     #   httpx
     #   langchain-core
     #   openai
+    #   sse-starlette
     #   starlette
 attrs==23.2.0
     # via aiohttp
@@ -38,7 +39,9 @@ dataclasses-json==0.6.4
 distro==1.9.0
     # via openai
 fastapi==0.110.0
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   sse-starlette
 frozenlist==1.4.1
     # via
     #   aiohttp
@@ -194,8 +197,12 @@ sqlalchemy==2.0.27
     # via
     #   langchain
     #   langchain-community
+sse-starlette==1.8.2
+    # via -r requirements.in
 starlette==0.36.3
-    # via fastapi
+    # via
+    #   fastapi
+    #   sse-starlette
 tenacity==8.2.3
     # via
     #   langchain
@@ -218,6 +225,8 @@ typing-inspect==0.9.0
 urllib3==2.2.1
     # via requests
 uvicorn==0.28.0
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   sse-starlette
 yarl==1.9.4
     # via aiohttp

@@ -19,7 +19,7 @@ from langchain_google_firestore import FirestoreChatMessageHistory
 
 from pydantic import BaseModel
 
-import agents
+import app.agents as agents
 
 class SessionCreation(BaseModel):
     agent: str
