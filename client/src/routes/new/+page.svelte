@@ -116,6 +116,8 @@
       })
       .then((res) => {
         // @ts-ignore
+        selectedAgents = res.agents;
+        // @ts-ignore
         return res.agents.map((e, i) => [e, res.reasons[i]]);
       })) as SuggestedAgents;
 
@@ -217,7 +219,7 @@
       {:else if selectedAgents.length > 0}
         <p>Selected agents: {selectedAgents.join(", ")}</p>
       {/if}
-      <button on:keydown={keydown} on:click={confirm}>Confirm</button>
+      <button on:click={confirm}>Confirm</button>
     </div>
   </Slide>
 </div>
