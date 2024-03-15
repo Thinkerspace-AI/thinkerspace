@@ -1,4 +1,6 @@
 <script lang="ts">
+  type SuggestedAgents = [string, string][];
+
   import { RemoteRunnable } from "@langchain/core/runnables/remote";
 
   import { onMount } from "svelte";
@@ -24,7 +26,19 @@
     },
   ];
 
+  const allAgents = [
+    "UI/UX Designer",
+    "Software Developer",
+    "Business Analyst",
+    "Marketing Specialist",
+    "End User",
+    "Product Manager",
+  ];
+
   let answers: string[] = [];
+  let response: SuggestedAgents = [];
+  let selectedAgents: string[] = [];
+  let sessionId: string;
 
   let slidesContainer: HTMLDivElement;
   let slides: Element[];
@@ -64,57 +78,74 @@
     }
   }
 
-  let response = "";
-
-  async function test(): Promise<string> {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve("done!");
-      }, 1000);
-    });
-  }
-
   async function submit() {
     console.log("Submitting");
     console.log(answers);
+
+    response = (await fetch("https://llm-app-whtpnrbuea-as.a.run.app/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        agent: "Test",
+        userid: "Test",
+      }),
+    })
+      .then((res) => res.json())
+      .then((json) => json.id)
+      .then((id) => {
+        const chain = new RemoteRunnable({
+          url: "https://llm-app-whtpnrbuea-as.a.run.app/convene",
+        });
+
+        console.log("Session ID: %s", id);
+
+        sessionId = id;
+
+        return chain.invoke(
+          {
+            human_input: answers.join("\n"),
+          },
+          {
+            configurable: {
+              session_id: id,
+            },
+          }
+        );
+      })
+      .then((res) => {
+        // @ts-ignore
+        return res.agents.map((e, i) => [e, res.reasons[i]]);
+      })) as SuggestedAgents;
 
     if (slides[slides.length - 1]) {
       slides[slides.length - 1].scrollIntoView({ behavior: "smooth" });
     }
 
     console.log(response);
-    response = await test();
-    console.log(response);
   }
 
-  // async function submit(n: number) {
-  //   console.log("Submitting");
+  async function confirm() {
+    console.log("Confirming");
+    console.log(selectedAgents);
 
-  //   const chain = new RemoteRunnable({
-  //     url: "http://localhost:8000/openai",
-  //   });
+    const confirmResponse = await fetch(
+      "https://llm-app-whtpnrbuea-as.a.run.app/select",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          agents: selectedAgents,
+          session_id: sessionId,
+        }),
+      }
+    );
 
-  //   const answers = Array.from(document.getElementsByTagName("textarea")).map(
-  //     (textarea) => textarea.value
-  //   );
-
-  //   const result = (await chain.invoke(
-  //     {
-  //       human_input: answers.join("\n"),
-  //     },
-  //     {
-  //       configurable: {
-  //         session_id: "57988dfa-34bf-4ac7-838f-624ec550a802",
-  //       },
-  //     }
-  //   )) as any;
-
-  //   console.log(result);
-
-  //   const resText = document.getElementById("response") as HTMLParagraphElement;
-
-  //   resText.innerText = result.content;
-  // }
+    console.log(confirmResponse);
+  }
 </script>
 
 <div class="slides-container" bind:this={slidesContainer}>
@@ -135,13 +166,59 @@
   </Slide>
   <Slide>
     <h1>Here's what I think</h1>
-    {#await response}
-      <p>Loading...</p>
-    {:then res}
-      <p>{res}</p>
-    {:catch error}
-      <p>{error}</p>
-    {/await}
+    <p>You might need help from the following agents:</p>
+    <div class="agents">
+      {#if response.length === 0}
+        <p>Loading...</p>
+      {:else}
+        {#each response as [name, description]}
+          <div class="agent">
+            <label>
+              <input
+                type="checkbox"
+                name="agents"
+                value={name}
+                bind:group={selectedAgents}
+                checked={true}
+              />
+              {name}
+              {#if description}
+                <p>{description}</p>
+              {:else}
+                <p>No description</p>
+              {/if}
+            </label>
+          </div>
+        {/each}
+      {/if}
+    </div>
+    <p>You might also want help from other agents</p>
+    <div class="agents">
+      {#each allAgents as agent}
+        {#if !response.find(([name]) => name === agent)}
+          <div class="agent">
+            <label>
+              <input
+                type="checkbox"
+                name="agents"
+                value={agent}
+                bind:group={selectedAgents}
+              />
+              {agent}
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </label>
+          </div>
+        {/if}
+      {/each}
+    </div>
+    <div id="agents-info">
+      {#if selectedAgents.length > 3}
+        <p>Too many agents selected. Please select up to to three only.</p>
+      {:else if selectedAgents.length > 0}
+        <p>Selected agents: {selectedAgents.join(", ")}</p>
+      {/if}
+      <button on:keydown={keydown} on:click={confirm}>Confirm</button>
+    </div>
   </Slide>
 </div>
 
@@ -171,5 +248,21 @@
 
   button:active {
     scale: 1.1;
+  }
+
+  .agents {
+    padding: 1rem 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .agent {
+    padding: 1rem;
+    border: 1px solid var(--gray);
+    border-radius: 8px;
+    text-align: justify;
+
+    user-select: none;
   }
 </style>
