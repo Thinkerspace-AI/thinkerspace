@@ -56,12 +56,12 @@
     resText.innerText = result;
 
     const data = {
-      agent: "UI/UX Designer",
-      userid: "test-user"
+      agents: ["UI/UX Designer", "Marketing Specialist", "Product Manager"],
+      session_id: "test-session"
     }
 
     const createResult = (await fetch(
-      "https://llm-app-whtpnrbuea-as.a.run.app/create/",
+      "https://llm-app-whtpnrbuea-as.a.run.app/select/",
       {
         method: 'POST',
         headers: {
