@@ -27,6 +27,10 @@ class SessionCreation(BaseModel):
     root: str | None = None
     parent: str | None = None
 
+class AgentSelection(BaseModel):
+    agents: list
+    session_id: str
+
 # load_dotenv() # NOTE: OPENAI_API_KEY of .env is on Paolo's machine
 
 app = FastAPI(
@@ -86,6 +90,16 @@ async def create_session(request: SessionCreation):
     )
     
     return {"id": session_id}
+
+@app.post("/select")
+async def select_agents(selection: AgentSelection):
+    db = firestore.Client(project="geometric-sled-417002")
+    ref = db.collection("sessions").document(selection.session_id)
+    ref.set(
+        {
+            "agents": firestore.ArrayUnion(selection.agents)
+        }
+    )
 
 if __name__ == "__main__":
     import uvicorn
