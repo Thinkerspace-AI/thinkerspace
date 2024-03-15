@@ -74,7 +74,7 @@ async def create_session(request: SessionCreation):
         par_ref = db.collection("sessions").document(request.root).collection("children").document(request.parent)
         par_ref.update(
             {
-                "children": firestore.arrayUnion([session_id]) # Update the array of children IDs
+                "children": firestore.ArrayUnion([session_id]) # Update the array of children IDs
             }
         )
     else:
@@ -84,8 +84,8 @@ async def create_session(request: SessionCreation):
         {
             "agent": request.agent,
             "userid": request.userid,
-            "root": request.parent,
-            "parent": None,
+            "root": request.root,
+            "parent": request.parent,
         },
     )
     
