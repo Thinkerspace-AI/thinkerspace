@@ -1,20 +1,14 @@
 FROM python:3.11-slim
 
-RUN pip install poetry==1.6.1
+WORKDIR /app
 
-RUN poetry config virtualenvs.create false
+COPY ./requirements.txt ./
 
-WORKDIR /code
-
-COPY ./pyproject.toml ./README.md ./poetry.lock* ./
-
-COPY ./package[s] ./packages
-
-RUN poetry install  --no-interaction --no-ansi --no-root
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
 COPY ./app ./app
 
-RUN poetry install --no-interaction --no-ansi
+COPY ./package[s] ./packages
 
 EXPOSE 8080
 
