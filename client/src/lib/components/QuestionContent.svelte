@@ -2,6 +2,7 @@
   export let question = "";
   export let description = "";
   export let next: () => void;
+  export let previous: () => void;
 
   let inputElement: HTMLInputElement;
   let buttonElement: HTMLButtonElement;
@@ -33,6 +34,12 @@
   >Next</button
 >
 
+{#if question != "What problem are you trying to solve?"}
+  <button on:keydown={keydown} on:click={previous} bind:this={buttonElement}
+    >Previous</button
+  >
+{/if}
+
 <style>
   input {
     width: 100%;
@@ -42,6 +49,8 @@
 
     border: none;
     box-shadow: 0 0 24px rgba(0, 0, 0, 0.1);
+
+    /* overflow: auto;      Need to convert into textarea */
   }
 
   input:focus {

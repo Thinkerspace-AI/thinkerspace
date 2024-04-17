@@ -72,6 +72,30 @@
     }
   }
 
+  function previousSlide(n: number) {
+    const currentSlide = slides[n];
+    const currentInput = currentSlide.querySelector(
+      "input"
+    ) as HTMLInputElement;
+
+    answers = [...answers, currentInput.value];
+
+    const previousSlide = slides[n - 1];
+
+    if (previousSlide != slides[-1]) {
+      previousSlide.scrollIntoView({ behavior: "smooth" });
+
+      const previousInput = (previousSlide.querySelector("input") ||
+        previousSlide.querySelector("button")) as HTMLElement;
+
+      if (previousInput) {
+        setTimeout(() => {
+          previousInput.focus();
+        }, 500);
+      }
+    }
+  }
+
   function keydown(e: KeyboardEvent) {
     if (e.key === "Tab") {
       e.preventDefault();
@@ -153,18 +177,19 @@
 <div class="slides-container" bind:this={slidesContainer}>
   {#each Object.entries(questions) as [id, { question, description }], i (id)}
     <Slide>
-      <QuestionContent {question} {description} next={() => nextSlide(i)} />
+      <QuestionContent {question} {description} previous={() => previousSlide(i)} next={() => nextSlide(i)} />
     </Slide>
   {/each}
   <Slide>
-    <h1>Here's what you said</h1>
-    <h6>Let's make sure we got it right</h6>
+    <h1>Here's what you said:</h1>
+    <h6>Let's make sure we got it right.</h6>
 
     {#each answers as answer, i}
-      <TitleDescription title={questions[i].question} description={answer} />
+      <TitleDescription title={questions[i].question} description={answer}/>
     {/each}
 
     <button on:keydown={keydown} on:click={submit}>Next</button>
+    <button on:keydown={keydown} on:click={returnToQuestions}>Previous</button>
   </Slide>
   <Slide>
     <h1>Here's what I think</h1>
