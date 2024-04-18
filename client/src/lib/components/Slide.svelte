@@ -7,12 +7,12 @@
 <style>
   .slide {
     height: 100vh;
-    width: 100%;
-
-    padding: 240px;
+    width: 100vw;
+    padding-top: 10px;
 
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
   }
 </style>
