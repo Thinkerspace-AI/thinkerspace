@@ -1,9 +1,14 @@
 <script lang="ts">
+  import AgentCompletion from "$lib/components/AgentCompletion.svelte";
   import { RemoteRunnable } from "@langchain/core/runnables/remote";
   import type { AIMessageChunk } from "langchain/schema";
 
+  import { onMount } from "svelte";
+
   export let data: { id: string };
 
+  const sessionId = data.id;
+  
   let inputElement: HTMLInputElement;
   let responses: HTMLDivElement;
   let completions: [string, [string, string][]][] = [];
@@ -14,6 +19,25 @@
     "Financial Analyst",
   ];
 
+  // onMount(async () => {
+  //   console.log("Mounted!");
+
+  //   const result = await fetch(
+  //     "https://llm-app-whtpnrbuea-as.a.run.app/getagents",
+  //     {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         session_id: sessionId,
+  //       }),
+  //     }
+  //   );
+
+  //   console.log("Result: ", result);
+  // });
+  
   async function generateCompletion(
     agent: string,
     input: string,
@@ -22,11 +46,6 @@
     const chain = new RemoteRunnable({
       url: "https://llm-app-whtpnrbuea-as.a.run.app/agent",
     });
-
-    console.log("Chain created");
-    console.log("Input: ", input);
-    console.log("Agent: ", agent);
-    console.log("Session ID: ", data.id);
 
     const res = (await chain.stream(
       {
@@ -83,10 +102,7 @@
       <p>{completionSet[0]}</p>
       <div class="completion-set">
         {#each completionSet[1] as completion}
-          <div class="completion">
-            <h2>{completion[0]}</h2>
-            <p>{completion[1]}</p>
-          </div>
+          <AgentCompletion prompt={completionSet[0]} {sessionId} {completion} />
         {/each}
       </div>
     {/each}
@@ -103,11 +119,5 @@
   .completion-set {
     display: flex;
     flex-direction: row;
-  }
-
-  .completion {
-    margin: 1rem;
-    padding: 1rem;
-    border: 1px solid black;
   }
 </style>
