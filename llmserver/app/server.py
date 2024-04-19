@@ -113,7 +113,7 @@ async def select_agents(selection: AgentSelection):
 async def get_agents(selection: AgentsRequest):
     db = firestore.Client(project="geometric-sled-417002")
     ref = db.collection("sessions").document(selection.session_id)
-    session_doc = await ref.get()
+    session_doc = ref.get()
     try:
         return {"agents": session_doc.to_dict().agents}
     except:
@@ -125,8 +125,8 @@ async def save_completion(request: SaveCompletion):
         session_id=request.session_id, collection="SessionHistories"
     )
 
-    await chat_history.add_user_message(request.prompt)
-    await chat_history.add_user_message(request.completion)
+    chat_history.add_user_message(request.prompt)
+    chat_history.add_ai_message(request.completion)
 
 if __name__ == "__main__":
     import uvicorn
