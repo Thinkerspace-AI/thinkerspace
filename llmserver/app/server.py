@@ -34,7 +34,7 @@ class AgentSelection(BaseModel):
 class AgentsRequest(BaseModel):
     session_id: str
 
-class ConfirmCompletion(BaseModel):
+class SaveCompletion(BaseModel):
     session_id: str
     prompt: str
     completion: str
@@ -113,12 +113,14 @@ async def select_agents(selection: AgentSelection):
 async def get_agents(selection: AgentsRequest):
     db = firestore.Client(project="geometric-sled-417002")
     ref = db.collection("sessions").document(selection.session_id)
-    session_doc = ref.get()
+    session_doc = await ref.get()
+    try:
+        return {"agents": session_doc.to_dict().agents}
+    except:
+        return HTTPException(status_code=404)
 
-    return {"agents": session_doc.agents}
-
-@app.post("/confirm")
-async def confirm_completion(request: ConfirmCompletion):
+@app.post("/save")
+async def save_completion(request: SaveCompletion):
     chat_history = FirestoreChatMessageHistory(
         session_id=request.session_id, collection="SessionHistories"
     )
