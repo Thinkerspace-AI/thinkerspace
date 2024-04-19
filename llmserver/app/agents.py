@@ -10,6 +10,7 @@ from langchain.memory import FileChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory, Runnable
+from langchain.memory import ChatMessageHistory
 
 from langserve.pydantic_v1 import BaseModel, Field
 
@@ -70,6 +71,36 @@ def create_session_factory(
 
     return get_chat_history
 
+def create_agent_session_factory(
+    agent: Union[str],
+) -> Callable[[str], BaseChatMessageHistory]:
+    """Create a session ID factory that creates session IDs from a base dir.
+
+    Args:
+        base_dir: Base directory to use for storing the chat histories.
+
+    Returns:
+        A session ID factory that creates session IDs from a base path.
+    """
+
+    def get_chat_history(session_id: str) -> FileChatMessageHistory:
+        """Get a chat history from a session ID."""
+        if not _is_valid_identifier(session_id):
+            raise HTTPException(
+                status_code=400,
+                detail=f"Session ID `{session_id}` is not in a valid format. "
+                "Session ID must only contain alphanumeric characters, "
+                "hyphens, and underscores.",
+            )
+        chat_history = FirestoreChatMessageHistory(
+            session_id=session_id, collection="SessionHistories"
+        )
+
+        copy = ChatMessageHistory(messages=chat_history.messages)
+
+        return copy
+
+    return get_chat_history
 
 ### CONVENER CHAIN ###
 
@@ -104,7 +135,7 @@ def create_configurable_chain() -> RunnableWithMessageHistory:
     chain = prompt | ChatOpenAI(model='gpt-3.5-turbo')
     chain_with_history = RunnableWithMessageHistory(
         chain,
-        create_session_factory("configurable"),
+        create_agent_session_factory("configurable"),
         input_messages_key="human_input",
         history_messages_key="history",
     )
