@@ -2,6 +2,7 @@
   type SuggestedAgents = [string, string][];
 
   import { RemoteRunnable } from "@langchain/core/runnables/remote";
+  import { goto } from "$app/navigation";
 
   import { onMount } from "svelte";
 
@@ -28,7 +29,7 @@
 
   const allAgents = [
     "UI/UX Designer",
-    "Software Developer",
+    "Technical Engineer",
     "Business Analyst",
     "Marketing Specialist",
     "End User",
@@ -115,6 +116,7 @@
         );
       })
       .then((res) => {
+        console.log("Response: ", res);
         // @ts-ignore
         selectedAgents = res.agents;
         // @ts-ignore
@@ -147,6 +149,8 @@
     );
 
     console.log(confirmResponse);
+
+    goto(`session/${sessionId}`);
   }
 </script>
 
