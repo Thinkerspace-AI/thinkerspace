@@ -24,10 +24,12 @@ body {
 h1 {
   font-family: "Inter";
   margin-top: 1rem;
+  padding-bottom: 1px;
 }
 
 h6 {
   font-size: 1rem;
   font-weight: 400;
   margin-top: 0.5rem;
+  padding-bottom: 5px;
 }

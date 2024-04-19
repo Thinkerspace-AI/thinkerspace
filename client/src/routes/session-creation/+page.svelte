@@ -5,22 +5,23 @@
 
   import { onMount } from "svelte";
 
+  import Modal from '$lib/components/Modal.svelte';
   import TitleDescription from "$lib/components/TitleDescription.svelte";
   import Slide from "$lib/components/Slide.svelte";
   import QuestionContent from "$lib/components/QuestionContent.svelte";
 
   const questions = [
-    {
+    { id: 1,
       question: "What problem are you trying to solve?",
       description:
         "Explain the specific pain points or challenges you want to address.",
     },
-    {
+    { id: 2,
       question: "Who is your ideal customer?",
       description:
         "Dive into the demographics and behaviors of your target audience.",
     },
-    {
+    { id: 3,
       question: "What is your big idea?",
       description: "Share your vision.",
     },
@@ -35,6 +36,9 @@
     "Product Manager",
   ];
 
+  let answer1: string;
+  let answer2: string; 
+  let answer3: string;
   let answers: string[] = [];
   let response: SuggestedAgents = [];
   let selectedAgents: string[] = [];
@@ -43,58 +47,12 @@
   let slidesContainer: HTMLDivElement;
   let slides: Element[];
 
+  let confirmation_modal: Modal;
+
   onMount(() => {
     window.scrollTo(0, 0);
     slides = Array.from(slidesContainer.children);
   });
-
-  function nextSlide(n: number) {
-    const currentSlide = slides[n];
-    const currentInput = currentSlide.querySelector(
-      "input"
-    ) as HTMLInputElement;
-
-    answers = [...answers, currentInput.value];
-
-    const nextSlide = slides[n + 1];
-
-    if (nextSlide) {
-      nextSlide.scrollIntoView({ behavior: "smooth" });
-
-      const nextInput = (nextSlide.querySelector("input") ||
-        nextSlide.querySelector("button")) as HTMLElement;
-
-      if (nextInput) {
-        setTimeout(() => {
-          nextInput.focus();
-        }, 500);
-      }
-    }
-  }
-
-  function previousSlide(n: number) {
-    const currentSlide = slides[n];
-    const currentInput = currentSlide.querySelector(
-      "input"
-    ) as HTMLInputElement;
-
-    answers = [...answers, currentInput.value];
-
-    const previousSlide = slides[n - 1];
-
-    if (previousSlide != slides[-1]) {
-      previousSlide.scrollIntoView({ behavior: "smooth" });
-
-      const previousInput = (previousSlide.querySelector("input") ||
-        previousSlide.querySelector("button")) as HTMLElement;
-
-      if (previousInput) {
-        setTimeout(() => {
-          previousInput.focus();
-        }, 500);
-      }
-    }
-  }
 
   function keydown(e: KeyboardEvent) {
     if (e.key === "Tab") {
@@ -103,6 +61,7 @@
   }
 
   async function submit() {
+    answers = [answer1, answer2, answer3];
     console.log("Submitting");
     console.log(answers);
 
@@ -152,13 +111,7 @@
     console.log(response);
   }
 
-  function returnToQuestions() {
-    if (slides[slides.length - 3]) {
-      slides[slides.length - 3].scrollIntoView({ behavior: "smooth" });
-    }
-  }
-
-  async function confirm() {
+  async function confirmAgents() {
     console.log("Confirming");
     console.log(selectedAgents);
 
@@ -181,25 +134,43 @@
 </script>
 
 <div class="slides-container" bind:this={slidesContainer}>
-  {#each Object.entries(questions) as [id, { question, description }], i (id)}
-    <Slide>
-      <QuestionContent {question} {description} previous={() => previousSlide(i)} next={() => nextSlide(i)} />
-    </Slide>
-  {/each}
   <Slide>
-    <h1>Here's what you said:</h1>
-    <h6>Let's make sure we got it right.</h6>
-
-    {#each answers as answer, i}
-      <TitleDescription title={questions[i].question} description={answer}/>
-    {/each}
-
-    <button on:keydown={keydown} on:click={submit}>Next</button>
-    <button on:keydown={keydown} on:click={returnToQuestions}>Previous</button>
+    <div class="question">
+      <h1>What problem are you trying to solve?</h1>
+      <h6>Explain the specific pain points or challenges you want to address.</h6>
+      <textarea bind:value={answer1}
+        placeholder="Type here..."
+      />
+    </div>
+  
+    <div class="question">
+      <h1>Who is your ideal customer?</h1>
+      <h6>Dive into the demographics and behaviors of your target audience.</h6>
+      <textarea bind:value={answer2} 
+        placeholder="Type here..."
+      />
+    </div>
+  
+    <div class="question">
+      <h1>What is your big idea?</h1>
+      <h6>Share your vision.</h6>
+      <textarea bind:value={answer3}
+        placeholder="Type here..."
+      />
+    </div>
+  
+    <button on:keydown={keydown} on:click={() => confirmation_modal.open()}>Submit</button>
+  
+    <Modal bind:this={confirmation_modal}>
+      <h1>Would you like to submit your answers?</h1>
+      <button on:keydown={keydown} on:click={submit}>Submit</button>
+      <button on:keydown={keydown} on:click={() => confirmation_modal.close()}>Close</button>
+    </Modal>
   </Slide>
+  
   <Slide>
-    <h1>Here's what I think</h1>
-    <p>You might need help from the following agents:</p>
+    <h1>Here's what I think.</h1>
+    <p>The following agents would be most helpful:</p>
     <div class="agents">
       {#if response.length === 0}
         <p>Loading...</p>
@@ -225,7 +196,7 @@
         {/each}
       {/if}
     </div>
-    <p>You might also want help from other agents:</p>
+    <p>Any recommended agents not to your liking? You might want help from these agents instead:</p>
     <div class="agents">
       {#each allAgents as agent}
         {#if !response.find(([name]) => name === agent)}
@@ -250,7 +221,7 @@
       {:else if selectedAgents.length > 0}
         <p>Selected agents: {selectedAgents.join(", ")}</p>
       {/if}
-      <button on:click={confirm}>Confirm</button>
+      <button on:click={confirmAgents}>Confirm</button>
     </div>
   </Slide>
 </div>
@@ -264,7 +235,7 @@
     background: var(--white);
     padding: 12px 24px;
 
-    float: right;
+    align-self: center;
     margin-top: 24px;
 
     border: none;
@@ -288,14 +259,28 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
+    width: 70vw;
   }
 
   .agent {
+    background: var(--white);
     padding: 1rem;
     border: 1px solid var(--gray);
     border-radius: 8px;
     text-align: justify;
 
     user-select: none;
+  }
+
+  .question {
+    margin: auto;
+    width: 70vw;
+  }
+
+  textarea {
+    padding: 10px 10px;
+    resize: none;
+    height: 16vh;
+    width: 70vw;
   }
 </style>
