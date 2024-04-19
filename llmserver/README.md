@@ -87,5 +87,5 @@ In the `llmserver` working directory, run the following commands:
 ```shell
 pipreqs --savepath=requirements.in
 pip-compile
-gcloud run deploy llm-app --port 8080 --source . --project geometric-sled-417002
+gcloud run deploy llm-app --port 8080 --source . --project geometric-sled-417002 --allow-unauthenticated --region asia-southeast1
 ```

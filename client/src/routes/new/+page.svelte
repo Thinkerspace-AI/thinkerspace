@@ -29,7 +29,7 @@
 
   const allAgents = [
     "UI/UX Designer",
-    "Software Developer",
+    "Technical Engineer",
     "Business Analyst",
     "Marketing Specialist",
     "End User",

@@ -8,7 +8,7 @@
   export let data: { id: string };
 
   const sessionId = data.id;
-
+  
   let inputElement: HTMLInputElement;
   let responses: HTMLDivElement;
   let completions: [string, [string, string][]][] = [];
@@ -37,7 +37,7 @@
 
   //   console.log("Result: ", result);
   // });
-
+  
   async function generateCompletion(
     agent: string,
     input: string,
@@ -113,6 +113,7 @@
   .responses {
     display: flex;
     flex-direction: column;
+    overflow-y: scroll;
   }
 
   .completion-set {
