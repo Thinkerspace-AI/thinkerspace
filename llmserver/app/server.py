@@ -31,6 +31,14 @@ class AgentSelection(BaseModel):
     agents: list
     session_id: str
 
+class AgentsRequest(BaseModel):
+    session_id: str
+
+class ConfirmCompletion(BaseModel):
+    session_id: str
+    prompt: str
+    completion: str
+
 # load_dotenv() # NOTE: OPENAI_API_KEY of .env is on Paolo's machine
 
 app = FastAPI(
@@ -100,6 +108,23 @@ async def select_agents(selection: AgentSelection):
             "agents": firestore.ArrayUnion(selection.agents)
         }
     )
+
+@app.post("/getagents")
+async def get_agents(selection: AgentsRequest):
+    db = firestore.Client(project="geometric-sled-417002")
+    ref = db.collection("sessions").document(selection.session_id)
+    session_doc = ref.get()
+
+    return {"agents": session_doc.agents}
+
+@app.post("/confirm")
+async def confirm_completion(request: ConfirmCompletion):
+    chat_history = FirestoreChatMessageHistory(
+        session_id=request.session_id, collection="SessionHistories"
+    )
+
+    await chat_history.add_user_message(request.prompt)
+    await chat_history.add_user_message(request.completion)
 
 if __name__ == "__main__":
     import uvicorn
