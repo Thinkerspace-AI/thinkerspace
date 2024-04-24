@@ -13,7 +13,7 @@
   box-sizing: border-box;
   color: var(--secondary);
 
-  font-family: "IBM Plex Sans", sans-serif;
+  font-family: 'IBM Plex Sans', sans-serif;
   transition-duration: 350ms;
 }
 
@@ -22,7 +22,7 @@ body {
 }
 
 h1 {
-  font-family: "Bricolage Grotesque", sans-serif;
+  font-family: 'Bricolage Grotesque', sans-serif;
   margin-top: 1rem;
 }
 

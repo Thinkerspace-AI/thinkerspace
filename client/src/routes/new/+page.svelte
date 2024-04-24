@@ -13,13 +13,11 @@
   const questions = [
     {
       question: "What problem are you trying to solve?",
-      description:
-        "Explain the specific pain points or challenges you want to address.",
+      description: "Explain the specific pain points or challenges you want to address.",
     },
     {
       question: "Who is your ideal customer?",
-      description:
-        "Dive into the demographics and behaviors of your target audience.",
+      description: "Dive into the demographics and behaviors of your target audience.",
     },
     {
       question: "What is your big idea?",
@@ -51,9 +49,7 @@
 
   function nextSlide(n: number) {
     const currentSlide = slides[n];
-    const currentInput = currentSlide.querySelector(
-      "input"
-    ) as HTMLInputElement;
+    const currentInput = currentSlide.querySelector("input") as HTMLInputElement;
 
     answers = [...answers, currentInput.value];
 
@@ -112,7 +108,7 @@
             configurable: {
               session_id: id,
             },
-          }
+          },
         );
       })
       .then((res) => {
@@ -134,19 +130,16 @@
     console.log("Confirming");
     console.log(selectedAgents);
 
-    const confirmResponse = await fetch(
-      "https://llm-app-whtpnrbuea-as.a.run.app/select",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          agents: selectedAgents,
-          session_id: sessionId,
-        }),
-      }
-    );
+    const confirmResponse = await fetch("https://llm-app-whtpnrbuea-as.a.run.app/select", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        agents: selectedAgents,
+        session_id: sessionId,
+      }),
+    });
 
     console.log(confirmResponse);
 
@@ -204,12 +197,7 @@
         {#if !response.find(([name]) => name === agent)}
           <div class="agent">
             <label>
-              <input
-                type="checkbox"
-                name="agents"
-                value={agent}
-                bind:group={selectedAgents}
-              />
+              <input type="checkbox" name="agents" value={agent} bind:group={selectedAgents} />
               {agent}
               <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </label>
