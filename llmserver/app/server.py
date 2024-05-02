@@ -40,8 +40,12 @@ class AgentsRequest(BaseModel):
 class SaveCompletion(BaseModel):
     session_id: str
     prompt: str
-    completion: dict # agent: str; message: str
-    not_picked: list # agent: str; message: str
+    completion_agent: str
+    completion_message: str # agent: str; message: str
+    not_picked_1_agent: str
+    not_picked_1_message: str
+    not_picked_2_agent: str
+    not_picked_2_message: str
 
 class HistoryRequest(BaseModel):
     session_id: str
@@ -133,43 +137,64 @@ async def save_completion(request: SaveCompletion):
     )
 
     chat_history.add_user_message(request.prompt)
-    chat_history.add_ai_message(request.completion.message)
+    chat_history.add_ai_message(request.completion_message)
 
-    prompt_entry = {'message': request.prompt, 'agent': 'user'}
-    completion_entry = request.completion
-    completion_entry['picked'] = True
+    prompt_entry = {
+        'message': request.prompt, 
+        'agent': 'user',
+        "picked": True,
+        "timestamp": firestore.SERVER_TIMESTAMP 
+    }
+    completion_entry = {
+        "agent": request.completion_agent,
+        "message": request.completion_message,
+        "picked": True,
+        'timestamp': firestore.SERVER_TIMESTAMP,
+    }
 
-    def set_not_picked(x: dict):
-        x['picked'] = False
-        return x
-    
-    not_picked_entries = [set_not_picked(x) for x in request.not_picked]
+    not_picked_1_entry = {
+        "agent": request.not_picked_1_agent,
+        "message": request.not_picked_1_message,
+        "picked": False,
+        'timestamp': firestore.SERVER_TIMESTAMP,
+    }
+
+    not_picked_2_entry = {
+        "agent": request.not_picked_2_agent,
+        "message": request.not_picked_2_message,
+        "picked": False,
+        'timestamp': firestore.SERVER_TIMESTAMP
+    }
 
     db = firestore.Client(project="geometric-sled-417002")
-    complete_history = db.collection("CompleteHistories").document(request.session_id)
-    complete_history.update(
-        {
-            "messages": firestore.ArrayUnion([prompt_entry, completion_entry] + not_picked_entries)
-        }
-    )
+    complete_history = db.collection("CompleteHistories").document(request.session_id).collection("Messages")
+
+    for entry in [prompt_entry, completion_entry, not_picked_1_entry, not_picked_2_entry]:
+        complete_history.add(entry)
     
 
 @app.post("/history")
 async def history(request: HistoryRequest):
     db = firestore.Client(project="geometric-sled-417002")
-    chat_history = db.collection("CompleteHistories").document(request.session_id).get()
 
-    messages = []
-    for message in chat_history.messages:
+    entries = []
+    messages = (
+        db.collection("CompleteHistories")
+        .document(request.session_id)
+        .collection("Messages")
+        .order_by('timestamp', direction=firestore.Query.ASCENDING)
+        .stream()
+    )
+    for message in messages:
+        message: firestore.DocumentSnapshot
         entry = {
-            'agent': message.agent,
-            'message': message.message
+            'agent': message.get('agent'),
+            'message': message.get('message'),
+            'picked': message.get('picked')
         }
-        if 'picked' in message.keys():
-            entry['picked'] = message.picked
-        messages.append(entry)
+        entries.append(entry)
     try:
-        return messages
+        return entries
     except:
         return HTTPException(status_code=404)
 
