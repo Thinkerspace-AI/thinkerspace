@@ -10,6 +10,7 @@ from langchain.memory import FileChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory, Runnable
+from langchain_core.runnables import ConfigurableFieldSpec
 from langchain.memory import ChatMessageHistory
 
 from langserve.pydantic_v1 import BaseModel, Field
@@ -33,6 +34,15 @@ class ConvenerRecommendation(BaseModel):
     agents: List[str] = Field(description="Top 3 agents you want to recommend")
     reasons: List[str] = Field(description="Reasons why you recommend each of them from 1 to 3")
 
+def _is_session_owner(user_id: str, session_id: str):
+    db = firestore.Client(project="geometric-sled-417002")
+    sessions = db.collection("users").document(user_id).collection('sessions').stream()
+    for session in sessions:
+        session: firestore.DocumentSnapshot
+        if session_id == session.get('id'):
+            return True
+        
+    return False
 
 ### AGENT FUNCTIONS ###
     
@@ -54,7 +64,7 @@ def create_session_factory(
         A session ID factory that creates session IDs from a base path.
     """
 
-    def get_chat_history(session_id: str) -> FileChatMessageHistory:
+    def get_chat_history(user_id: str, session_id: str) -> FileChatMessageHistory:
         """Get a chat history from a session ID."""
         if not _is_valid_identifier(session_id):
             raise HTTPException(
@@ -62,6 +72,11 @@ def create_session_factory(
                 detail=f"Session ID `{session_id}` is not in a valid format. "
                 "Session ID must only contain alphanumeric characters, "
                 "hyphens, and underscores.",
+            )
+        if not _is_session_owner(user_id, session_id):
+            raise HTTPException(
+                status_code=403,
+                detail="User does not own this session"
             )
         chat_history = FirestoreChatMessageHistory(
             session_id=session_id, collection="SessionHistories"
@@ -83,7 +98,7 @@ def create_agent_session_factory(
         A session ID factory that creates session IDs from a base path.
     """
 
-    def get_chat_history(session_id: str) -> FileChatMessageHistory:
+    def get_chat_history(user_id: str, session_id: str) -> FileChatMessageHistory:
         """Get a chat history from a session ID."""
         if not _is_valid_identifier(session_id):
             raise HTTPException(
@@ -118,6 +133,24 @@ def create_convener_chain() -> RunnableWithMessageHistory:
         input_messages_key="human_input",
         output_messages_key="agents",
         history_messages_key="history",
+        history_factory_config=[
+        ConfigurableFieldSpec(
+            id="user_id",
+            annotation=str,
+            name="User ID",
+            description="Unique identifier for the user.",
+            default="",
+            is_shared=True,
+        ),
+        ConfigurableFieldSpec(
+            id="session_id",
+            annotation=str,
+            name="Session ID",
+            description="Unique identifier for the session.",
+            default="",
+            is_shared=True,
+        ),
+    ],
     )
     return chain_with_history
 
@@ -138,6 +171,24 @@ def create_configurable_chain() -> RunnableWithMessageHistory:
         create_agent_session_factory("configurable"),
         input_messages_key="human_input",
         history_messages_key="history",
+        history_factory_config=[
+        ConfigurableFieldSpec(
+            id="user_id",
+            annotation=str,
+            name="User ID",
+            description="Unique identifier for the user.",
+            default="",
+            is_shared=True,
+        ),
+        ConfigurableFieldSpec(
+            id="session_id",
+            annotation=str,
+            name="Session ID",
+            description="Unique identifier for the session.",
+            default="",
+            is_shared=True,
+        ),
+    ],
     )
 
     return chain_with_history
