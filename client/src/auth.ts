@@ -12,5 +12,24 @@ export const { handle, signIn, signOut } = SvelteKitAuth({
     Google({
       clientId: AUTH_GOOGLE_ID,
       clientSecret: AUTH_GOOGLE_SECRET,
-    })]
+    })
+  ],
+  callbacks: {
+    async jwt({ token, account }) {
+      if (account) {
+        token.accessToken = account.access_token;
+        token.provider = account.provider;
+      }
+
+      return token;
+    },
+    async session({ session, token }) {
+      // @ts-ignore
+      session.access_token = token.accessToken;
+      // @ts-ignore
+      session.provider = token.provider;
+
+      return session;
+    }
+  }
 });
