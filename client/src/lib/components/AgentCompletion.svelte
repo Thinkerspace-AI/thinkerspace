@@ -1,31 +1,30 @@
 <script lang="ts">
-  export let sessionId: string;
-  export let prompt: string;
   export let completion: [string, string];
   export let hasSave: boolean = true;
+  export let save: () => void;
 
   $: [agent, response] = completion;
 
-  async function save() {
-    console.log("Saving to history...");
+  // async function save() {
+  //   console.log("Saving to history...");
 
-    const saveResponse = await fetch(
-      "https://llm-app-whtpnrbuea-as.a.run.app/save",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          session_id: sessionId,
-          prompt: prompt,
-          completion: response,
-        }),
-      }
-    );
+  //   const saveResponse = await fetch(
+  //     "https://llm-app-whtpnrbuea-as.a.run.app/save",
+  //     {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         session_id: sessionId,
+  //         prompt: prompt,
+  //         completion: response,
+  //       }),
+  //     }
+  //   );
 
-    console.log(saveResponse);
-  }
+  //   console.log(saveResponse);
+  // }
 </script>
 
 <div class="completion">
