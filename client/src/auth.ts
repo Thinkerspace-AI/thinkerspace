@@ -2,6 +2,7 @@ import { SvelteKitAuth } from "@auth/sveltekit";
 import GitHub from "@auth/sveltekit/providers/github";
 import Google from "@auth/sveltekit/providers/google";
 import { GITHUB_ID, GITHUB_SECRET, AUTH_GOOGLE_ID, AUTH_GOOGLE_SECRET } from "$env/static/private";
+import getUuid from "uuid-by-string";
 
 export const { handle, signIn, signOut } = SvelteKitAuth({
   providers: [
@@ -28,6 +29,7 @@ export const { handle, signIn, signOut } = SvelteKitAuth({
       session.access_token = token.accessToken;
       // @ts-ignore
       session.provider = token.provider;
+      session.user.id = getUuid(token.provider + session.user.email)
 
       return session;
     }

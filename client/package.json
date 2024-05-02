@@ -38,6 +38,7 @@
 	"dependencies": {
 		"@auth/sveltekit": "^1.0.1",
 		"@langchain/core": "^0.1.59",
-		"langchain": "^0.1.35"
+		"langchain": "^0.1.35",
+		"uuid-by-string": "^4.0.0"
 	}
 }
