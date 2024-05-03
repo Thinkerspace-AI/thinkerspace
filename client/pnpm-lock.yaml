@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@auth/core':
+    specifier: ^0.30.0
+    version: 0.30.0
   '@auth/sveltekit':
     specifier: ^1.0.1
     version: 1.0.1(@sveltejs/kit@2.5.7)(svelte@4.2.15)
@@ -14,6 +17,12 @@ dependencies:
   langchain:
     specifier: ^0.1.35
     version: 0.1.35
+  uuid-by-string:
+    specifier: ^4.0.0
+    version: 4.0.0
+  zod:
+    specifier: ^3.23.5
+    version: 3.23.5
 
 devDependencies:
   '@playwright/test':
@@ -701,8 +710,8 @@ packages:
       flat: 5.0.2
       langsmith: 0.1.18
       uuid: 9.0.1
-      zod: 3.23.3
-      zod-to-json-schema: 3.23.0(zod@3.23.3)
+      zod: 3.23.5
+      zod-to-json-schema: 3.23.0(zod@3.23.5)
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -721,8 +730,8 @@ packages:
       p-queue: 6.6.2
       p-retry: 4.6.2
       uuid: 9.0.1
-      zod: 3.23.3
-      zod-to-json-schema: 3.23.0(zod@3.23.3)
+      zod: 3.23.5
+      zod-to-json-schema: 3.23.0(zod@3.23.5)
     dev: false
 
   /@langchain/openai@0.0.28:
@@ -732,8 +741,8 @@ packages:
       '@langchain/core': 0.1.59
       js-tiktoken: 1.0.11
       openai: 4.38.3
-      zod: 3.23.3
-      zod-to-json-schema: 3.23.0(zod@3.23.3)
+      zod: 3.23.5
+      zod-to-json-schema: 3.23.0(zod@3.23.5)
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -2015,6 +2024,14 @@ packages:
     resolution: {integrity: sha512-6ScbIk2WWCeXkmzF6bRPmEuaqy1m8SbsRFMa/FLrSCkGIhj8OLVG/IH+XHVmNMx/KUo8cVWEE6oKR4dJ+S0Rkg==}
     dev: false
 
+  /js-md5@0.7.3:
+    resolution: {integrity: sha512-ZC41vPSTLKGwIRjqDh8DfXoCrdQIyBgspJVPXHBGu4nZlAEvG3nf+jO9avM9RmLiGakg7vz974ms99nEV0tmTQ==}
+    dev: false
+
+  /js-sha1@0.6.0:
+    resolution: {integrity: sha512-01gwBFreYydzmU9BmZxpVk6svJJHrVxEN3IOiGl6VO93bVKYETJ0sIth6DASI6mIFdt7NmfX9UiByRzsYHGU9w==}
+    dev: false
+
   /js-tiktoken@1.0.11:
     resolution: {integrity: sha512-PajXFLq2vx7/8jllQZ43vzNpAai/0MOVdJjW/UrNyJorNQRTjHrqdGJG/mjHVy7h9M6dW6CaG43eNLMYFkTh6w==}
     dependencies:
@@ -2236,8 +2253,8 @@ packages:
       p-retry: 4.6.2
       uuid: 9.0.1
       yaml: 2.4.1
-      zod: 3.23.3
-      zod-to-json-schema: 3.23.0(zod@3.23.3)
+      zod: 3.23.5
+      zod-to-json-schema: 3.23.0(zod@3.23.5)
     transitivePeerDependencies:
       - '@aws-crypto/sha256-js'
       - '@aws-sdk/client-bedrock-agent-runtime'
@@ -3235,6 +3252,13 @@ packages:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
     dev: true
 
+  /uuid-by-string@4.0.0:
+    resolution: {integrity: sha512-88ZSfcSkN04juiLqSsuyteqlSrXNFdsEPzSv3urnElDXNsZUXQN0smeTnh99x2DE15SCUQNgqKBfro54CuzHNQ==}
+    dependencies:
+      js-md5: 0.7.3
+      js-sha1: 0.6.0
+    dev: false
+
   /uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
@@ -3427,14 +3451,14 @@ packages:
     engines: {node: '>=12.20'}
     dev: true
 
-  /zod-to-json-schema@3.23.0(zod@3.23.3):
+  /zod-to-json-schema@3.23.0(zod@3.23.5):
     resolution: {integrity: sha512-az0uJ243PxsRIa2x1WmNE/pnuA05gUq/JB8Lwe1EDCCL/Fz9MgjYQ0fPlyc2Tcv6aF2ZA7WM5TWaRZVEFaAIag==}
     peerDependencies:
       zod: ^3.23.3
     dependencies:
-      zod: 3.23.3
+      zod: 3.23.5
     dev: false
 
-  /zod@3.23.3:
-    resolution: {integrity: sha512-tPvq1B/2Yu/dh2uAIH2/BhUlUeLIUvAjr6dpL/75I0pCYefHgjhXk1o1Kob3kTU8C7yU1j396jFHlsVWFi9ogg==}
+  /zod@3.23.5:
+    resolution: {integrity: sha512-fkwiq0VIQTksNNA131rDOsVJcns0pfVUjHzLrNBiF/O/Xxb5lQyEXkhZWcJ7npWsYlvs+h0jFWXXy4X46Em1JA==}
     dev: false

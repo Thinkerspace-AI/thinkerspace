@@ -2,46 +2,56 @@
   import AgentCompletion from "$lib/components/AgentCompletion.svelte";
   import { RemoteRunnable } from "@langchain/core/runnables/remote";
   import type { AIMessageChunk } from "langchain/schema";
-
+  import type { Session } from "@auth/core/types";
   import { onMount } from "svelte";
 
-  export let data: { id: string };
+  export let data: {
+    history: [agent: string, message: string, picked: boolean][];
+    agents: string[];
+    id: string;
+    session: Session;
+  };
 
   const sessionId = data.id;
+  const clientSession = data.session;
+  const userId = clientSession.user?.id as string;
+
+  let completions: [string, [string, string][]][] = [];
+  let agents: string[] = data.agents;
+
+  onMount(() => {
+    // Retrieve stored agents and history
+    let history: [string, string, boolean][][] = [];
+    let temp = data.history;
+
+    while (temp.length) {
+      history.push(temp.splice(0, agents.length + 1));
+    }
+
+    completions = history.map((completionSet) => {
+      // @ts-ignore
+      const prompt = completionSet.shift().message as string;
+
+      console.log("Prompt: ", prompt);
+
+      const completions = completionSet.map((completion) => {
+        // @ts-ignore
+        return [completion.agent, completion.message];
+      }) as [string, string][];
+
+      console.log("Completions: ", completions);
+
+      return [prompt, completions];
+    });
+  });
 
   let inputElement: HTMLInputElement;
   let responses: HTMLDivElement;
-  let completions: [string, [string, string][]][] = [];
-
-  let agents: string[] = [
-    "UI/UX Designer",
-    "Technical Engineer",
-    "Financial Analyst",
-  ];
-
-  // onMount(async () => {
-  //   console.log("Mounted!");
-
-  //   const result = await fetch(
-  //     "https://llm-app-whtpnrbuea-as.a.run.app/getagents",
-  //     {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         session_id: sessionId,
-  //       }),
-  //     }
-  //   );
-
-  //   console.log("Result: ", result);
-  // });
 
   async function generateCompletion(
     agent: string,
     input: string,
-    agentCompletions: [string, string]
+    agentCompletions: [string, string],
   ) {
     const chain = new RemoteRunnable({
       url: "https://llm-app-whtpnrbuea-as.a.run.app/agent",
@@ -54,9 +64,9 @@
       {
         configurable: {
           agent: agent,
-          session_id: data.id,
+          session_id: sessionId,
         },
-      }
+      },
     )) as AsyncGenerator<AIMessageChunk>;
 
     console.log("Stream created. Res: ", res);
@@ -68,6 +78,35 @@
       agentCompletions[1] += chunk.content;
       completions = completions;
     }
+  }
+
+  async function save(prompt: string, completions: [string, string][], pickedIndex: number) {
+    console.log("Saving to history...");
+
+    const agent = completions[pickedIndex][0];
+    const message = completions[pickedIndex][1];
+
+    const notPicked = completions.filter((_, idx) => idx !== pickedIndex);
+
+    const saveResponse = await fetch("https://llm-app-whtpnrbuea-as.a.run.app/save", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_id: userId,
+        session_id: sessionId,
+        prompt: prompt,
+        completion_agent: agent,
+        completion_message: message,
+        not_picked_1_agent: notPicked[0][0],
+        not_picked_1_message: notPicked[0][1],
+        not_picked_2_agent: notPicked[1][0],
+        not_picked_2_message: notPicked[1][1],
+      }),
+    });
+
+    console.log(saveResponse);
   }
 
   async function submit() {
@@ -94,15 +133,18 @@
 
 <div class="session">
   <h1>Session</h1>
-  <p>Session ID: {data.id}</p>
+  <p>Session ID: {sessionId}</p>
   <input bind:this={inputElement} type="text" placeholder="Enter your prompt" />
   <button on:click={submit}>Submit</button>
   <div bind:this={responses} class="responses">
     {#each completions as completionSet}
       <p>{completionSet[0]}</p>
       <div class="completion-set">
-        {#each completionSet[1] as completion}
-          <AgentCompletion prompt={completionSet[0]} {sessionId} {completion} />
+        {#each completionSet[1] as completion, idx}
+          <AgentCompletion
+            {completion}
+            save={() => save(completionSet[0], completionSet[1], idx)}
+          />
         {/each}
       </div>
     {/each}

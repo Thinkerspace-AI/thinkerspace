@@ -10,6 +10,13 @@
   import Slide from "$lib/components/Slide.svelte";
   import QuestionContent from "$lib/components/QuestionContent.svelte";
 
+  import type { Session } from "@auth/core/types";
+
+  export let data: { session: Session };
+
+  const clientSession: Session = data.session;
+  const userId = clientSession.user?.id as string;
+
   const questions = [
     {
       question: "What problem are you trying to solve?",
@@ -28,7 +35,7 @@
   const allAgents = [
     "UI/UX Designer",
     "Technical Engineer",
-    "Business Analyst",
+    "Financial Analyst",
     "Marketing Specialist",
     "End User",
     "Product Manager",
@@ -78,6 +85,7 @@
   async function submit() {
     console.log("Submitting");
     console.log(answers);
+    console.log(userId);
 
     response = (await fetch("https://llm-app-whtpnrbuea-as.a.run.app/create", {
       method: "POST",
@@ -85,8 +93,8 @@
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        user_id: userId,
         agent: "Test",
-        userid: "Test",
       }),
     })
       .then((res) => res.json())
@@ -100,6 +108,8 @@
 
         sessionId = id;
 
+        console.log(id, userId);
+
         return chain.invoke(
           {
             human_input: answers.join("\n"),
@@ -107,6 +117,7 @@
           {
             configurable: {
               session_id: id,
+              user_id: userId,
             },
           },
         );
@@ -138,6 +149,7 @@
       body: JSON.stringify({
         agents: selectedAgents,
         session_id: sessionId,
+        user_id: userId,
       }),
     });
 

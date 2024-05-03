@@ -36,8 +36,11 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@auth/core": "^0.30.0",
 		"@auth/sveltekit": "^1.0.1",
 		"@langchain/core": "^0.1.59",
-		"langchain": "^0.1.35"
+		"langchain": "^0.1.35",
+		"uuid-by-string": "^4.0.0",
+		"zod": "^3.23.5"
 	}
 }
