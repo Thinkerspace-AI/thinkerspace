@@ -1,7 +1,9 @@
 import { SvelteKitAuth } from "@auth/sveltekit";
 import GitHub from "@auth/sveltekit/providers/github";
 import Google from "@auth/sveltekit/providers/google";
+import Credentials from "@auth/sveltekit/providers/credentials";
 import { GITHUB_ID, GITHUB_SECRET, AUTH_GOOGLE_ID, AUTH_GOOGLE_SECRET } from "$env/static/private";
+
 import getUuid from "uuid-by-string";
 
 export const { handle, signIn, signOut } = SvelteKitAuth({
@@ -13,7 +15,36 @@ export const { handle, signIn, signOut } = SvelteKitAuth({
     Google({
       clientId: AUTH_GOOGLE_ID,
       clientSecret: AUTH_GOOGLE_SECRET,
-    })
+    }),
+    Credentials({
+      credentials: {
+        email: { type: 'email', label: 'Email' },
+        password: { type: 'password', label: 'Password' },
+      },
+      authorize: async (credentials) => {
+        let user = null;
+
+        const userResponse = await fetch("https://llm-app-whtpnrbuea-as.a.run.app/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: credentials.email, pw_hash: credentials.password }), // TODO: Hash password
+        });
+
+        console.log(userResponse);
+
+        if (!userResponse.ok) {
+          return null;
+        }
+
+        user = await userResponse.json();
+
+        console.log(user);
+
+        return user;
+      },
+    }),
   ],
   callbacks: {
     async jwt({ token, account }) {
