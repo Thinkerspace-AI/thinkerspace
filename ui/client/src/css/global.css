@@ -1,0 +1,34 @@
+:root {
+  --white: #fdfbfc;
+  --black: #232323;
+  --gray: #9d9d9d;
+  --primary: #fcc454;
+  --secondary: #3c3748;
+  --20: #ffb9c1;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color: var(--secondary);
+
+  font-family: "Domine", serif;
+  transition-duration: 350ms;
+}
+
+body {
+  background-color: var(--primary);
+}
+
+h1 {
+  font-family: "Inter";
+  margin-top: 1rem;
+  font-weight: 700;
+}
+
+h6 {
+  font-size: 1rem;
+  font-weight: 400;
+  margin-top: 0.5rem;
+}
