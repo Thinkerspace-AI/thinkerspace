@@ -23,7 +23,9 @@ export const load: PageServerLoad = async (event) => {
     throw error(sessionReq.status, "Failed to fetch sessions");
   }
 
-  const sessions = await sessionReq.json();
+  const sessionsJson = (await sessionReq.json()) as [session_id: string][]
+  
+  const sessions = sessionsJson.map(session => session.session_id);
 
   console.log(sessions);
 
