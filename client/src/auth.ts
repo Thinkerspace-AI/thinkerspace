@@ -62,6 +62,30 @@ export const { handle, signIn, signOut } = SvelteKitAuth({
       session.provider = token.provider;
       session.user.id = getUuid(token.provider + session.user.email)
 
+      // Register User
+      try {
+        console.log("Attempting to register as new user");
+
+        const res = await fetch("https://llm-app-whtpnrbuea-as.a.run.app/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: session.user.email, pw_hash: session.user.id, user_id: session.user.id }),
+        });
+
+        console.log("Response: ", res);
+
+        if (res.ok) {
+          const data = await res.json();
+          console.log(data);
+        } else {
+          console.error("Failed to register");
+        }
+      } catch(e) {
+        console.error(e);
+      }
+
       return session;
     }
   }

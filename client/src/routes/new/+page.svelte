@@ -85,6 +85,7 @@
   async function submit() {
     console.log("Submitting");
     console.log(answers);
+    console.log(userId);
 
     response = (await fetch("https://llm-app-whtpnrbuea-as.a.run.app/create", {
       method: "POST",

@@ -39,6 +39,7 @@
 
 {#if $page.data.session}
   <p>You are already logged in</p>
+  <p>Go to <a href="/sessions">sessions</a></p>
   <SignOut>
     <div slot="submitButton">Sign out</div>
   </SignOut>
