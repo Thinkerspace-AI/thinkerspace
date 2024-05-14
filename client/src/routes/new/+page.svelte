@@ -56,6 +56,13 @@
   let submitModal: Modal;
   let agentModal: Modal;
 
+  let textarea1: HTMLTextAreaElement;
+  let textarea2: HTMLTextAreaElement;
+  let textarea3: HTMLTextAreaElement;
+  let submitButton: HTMLButtonElement;
+
+  $: focusAreas = [textarea1, textarea2, textarea3, submitButton];
+
   onMount(() => {
     window.scrollTo(0, 0);
     slides = Array.from(slidesContainer.children);
@@ -87,9 +94,10 @@
     confirm();
   }
 
-  function keydown(e: KeyboardEvent) {
+  function keydown(e: KeyboardEvent, index: number) {
     if (e.key === "Tab") {
       e.preventDefault();
+      focusAreas[index].focus();
     }
   }
 
@@ -182,7 +190,9 @@
         <h6 class="pb-1 pl-1">{questions[0].description}</h6>
         <textarea
           placeholder="Type here..."
+          bind:this={textarea1}
           bind:value={answer1}
+          on:keydown={(e) => keydown(e, 1)}
           class="xl:h-16 2xl:h-24 w-full resize-none text-justify p-2 overflow-y-scroll focus:h-36"
           tabindex="-1"
         ></textarea>
@@ -192,7 +202,9 @@
         <h6 class="pb-1 pl-1">{questions[1].description}</h6>
         <textarea
           placeholder="Type here..."
+          bind:this={textarea2}
           bind:value={answer2}
+          on:keydown={(e) => keydown(e, 2)}
           class="xl:h-16 2xl:h-24 w-full resize-none text-justify p-2 overflow-y-scroll focus:h-36"
           tabindex="-1"
         ></textarea>
@@ -202,7 +214,9 @@
         <h6 class="pb-1 pl-1">{questions[2].description}</h6>
         <textarea
           placeholder="Type here..."
+          bind:this={textarea3}
           bind:value={answer3}
+          on:keydown={(e) => keydown(e, 3)}
           class="xl:h-16 2xl:h-24 w-full resize-none text-justify p-2 overflow-y-scroll focus:h-36"
           tabindex="-1"
         ></textarea>
@@ -210,6 +224,8 @@
       <button
         class="bg-Tpurple-100 hover:bg-Tyellow-100 outline outline-offset-1 outline-Tpurple-100 text-Tyellow-100 hover:text-Tpurple-100 text-lg font-inter py-2 px-4 rounded-full w-fit"
         tabindex="-1"
+        bind:this={submitButton}
+        on:keydown={(e) => keydown(e, 0)}
         on:click={openSubmitModal}
       >
         Submit
