@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { signOut } from "@auth/sveltekit/client";
+
   import light_logo from "$lib/assets/Thinkerspace_logo_light.png";
 
   import Modal from "$lib/components/Modal.svelte";
@@ -17,8 +19,9 @@
   }
 
   async function confirmSignOut() {
-    goto("/login");
+    signOut();
     closeSignOutModal();
+    goto("/login");
   }
 
   console.log("Page Data:", $page.data);
