@@ -8,7 +8,7 @@
   <p>{description}</p>
 </div>
 
-<style>
+<!-- <style>
   h3 {
     margin: 32px 0 16px;
   }
@@ -20,4 +20,4 @@
   p::before {
     content: "| ";
   }
-</style>
+</style> -->

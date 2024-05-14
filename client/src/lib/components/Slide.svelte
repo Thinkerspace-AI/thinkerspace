@@ -1,10 +1,10 @@
-<div class="slide">
-  <div class="slide-content">
+<div class="slide h-screen w-screen flex-none flex-col">
+  <div class="slide-content w-screen">
     <slot />
   </div>
 </div>
 
-<style>
+<!-- <style>
   .slide {
     height: 100vh;
     width: 100%;
@@ -15,4 +15,4 @@
     flex-direction: column;
     justify-content: center;
   }
-</style>
+</style> -->

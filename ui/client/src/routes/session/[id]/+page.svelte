@@ -102,8 +102,8 @@
 
 <div class="session max-h-screen flex flex-col items-center">
   <div class="w-3/4 pb-2 h-screen flex flex-col justify-center">
-    <h1 class="font-bold font-inter text-2xl mt-4 pb-1 w-full text-center">Session Name (set by User)</h1>
-    <div bind:this={responses} class="responses bg-white w-full h-3/5 overflow-y-scroll mt-2 mb-6 px-2 flex flex-col flex-end">
+    <h1 class="font-bold font-inter text-2xl mt-4 cpb-1 w-full text-center">Session Name (set by User)</h1>
+    <div bind:this={responses} class="responses bg-white w-full h-3/5 overflow-y-scroll mt-2 mb-6 px-2 flex flex-col flex-end"></div>
       <div class="mt-auto relative bottom-0 flex flex-col flex-end">
         {#each completions as completionSet}
           <div class="h-fit">
