@@ -4,10 +4,6 @@
 
   import dark_logo from "$lib/assets/Thinkerspace_logo_dark.png";
 
-  if ($page.data) {
-    console.log("Page Data:", $page.data);
-  }
-
   let email = "";
   let password = "";
 
