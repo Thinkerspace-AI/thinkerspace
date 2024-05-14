@@ -34,12 +34,36 @@
   ];
 
   const allAgents = [
-    "UI/UX Designer",
-    "Technical Engineer",
-    "Financial Analyst",
-    "Marketing Specialist",
-    "End User",
-    "Product Manager",
+    {
+      name: "UI/UX Designer",
+      description:
+        "An expert in designing user interfaces and improving user experience. Helpful for creating visually appealing and user-friendly products.",
+    },
+    {
+      name: "Technical Engineer",
+      description:
+        "A professional in software development and technical support. Useful for building and maintaining the product.",
+    },
+    {
+      name: "Financial Analyst",
+      description:
+        "A specialist in all things finance and accounting. Valuable for budgeting and financial planning.",
+    },
+    {
+      name: "Marketing Specialist",
+      description:
+        "An expert in public relations and marketing strategies. Great for promoting the product and attracting customers.",
+    },
+    {
+      name: "End User",
+      description:
+        "A regular user who can provide feedback on the product. Useful for understanding the user experience and improving the product.",
+    },
+    {
+      name: "Product Manager",
+      description:
+        "A professional in product development and management. Helpful for overseeing the product lifecycle and ensuring its success.",
+    },
   ];
 
   let answer1: string;
@@ -284,19 +308,19 @@
       </p>
       <div class="agents grid grid-cols-3 gap-4 pb-6 text-justify">
         {#each allAgents as agent}
-          {#if !response.find(([name]) => name === agent)}
+          {#if !response.find(([name]) => name === agent.name)}
             <div class="agent border-solid border-2 h-40 overflow-y-scroll bg-white select-none">
               <label class="font-domine">
                 <input
                   class="font-inter"
                   type="checkbox"
                   name="agents"
-                  value={agent}
+                  value={agent.name}
                   bind:group={selectedAgents}
                   tabindex="-1"
                 />
-                {agent}
-                <p class="font-domine">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                {agent.name}
+                <p class="font-domine">{agent.description}</p>
               </label>
             </div>
           {/if}
