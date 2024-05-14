@@ -174,20 +174,20 @@
 <div class="slides-container flex flex-col overflow-hidden max-h-screen" bind:this={slidesContainer}>
   <Slide>
     <div class="m-auto w-8/12 h-screen flex flex-none flex-col items-center justify-center">
-      <div class="slide-content pb-2 w-full">
+      <div class="slide-content mt-12 pb-2 w-full">
         <h1 class="font-bold font-inter text-2xl pb-1 pl-1">{questions[0].question}</h1>
         <h6 class="pb-1 pl-1">{questions[0].description}</h6>
-        <textarea placeholder="Type here..." bind:value={answer1} class="h-20 w-full resize-none text-justify p-2 overflow-y-scroll focus:h-48" tabindex="-1"></textarea>
+        <textarea placeholder="Type here..." bind:value={answer1} class="xl:h-16 2xl:h-24 w-full resize-none text-justify p-2 overflow-y-scroll focus:h-36" tabindex="-1"></textarea>
       </div>
       <div class="slide-content pb-2 w-full">
         <h1 class="font-bold font-inter text-2xl pb-1 pl-1">{questions[1].question}</h1>
         <h6 class="pb-1 pl-1">{questions[1].description}</h6>
-        <textarea placeholder="Type here..." bind:value={answer2} class="h-20 w-full resize-none text-justify p-2 overflow-y-scroll focus:h-48" tabindex="-1"></textarea>
+        <textarea placeholder="Type here..." bind:value={answer2} class="xl:h-16 2xl:h-24 w-full resize-none text-justify p-2 overflow-y-scroll focus:h-36" tabindex="-1"></textarea>
       </div>
       <div class="slide-content pb-8 w-full">
         <h1 class="font-bold font-inter text-2xl pb-1 pl-1">{questions[2].question}</h1>
         <h6 class="pb-1 pl-1">{questions[2].description}</h6>
-        <textarea placeholder="Type here..." bind:value={answer3} class="h-20 w-full resize-none text-justify p-2 overflow-y-scroll focus:h-48" tabindex="-1"></textarea>
+        <textarea placeholder="Type here..." bind:value={answer3} class="xl:h-16 2xl:h-24 w-full resize-none text-justify p-2 overflow-y-scroll focus:h-36" tabindex="-1"></textarea>
       </div>
       <button class="bg-Tpurple-100 hover:bg-Tyellow-100 outline outline-offset-1 outline-Tpurple-100 text-Tyellow-100 hover:text-Tpurple-100 text-lg font-inter py-2 px-4 rounded-full w-fit" tabindex="-1" on:click={openSubmitModal}>
         Submit
