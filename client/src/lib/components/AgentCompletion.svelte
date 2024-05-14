@@ -27,16 +27,16 @@
   // }
 </script>
 
-<div class="completion">
-  <h2 class="agent">{agent}</h2>
-  <p class="response">{response}</p>
+<div class="completion mx-1 mb-6 px-1 py-3 rounded-3xl border border-Tpurple-100 flex flex-col items-center text-justify">
+  <h2 class="agent font-inter text-xl text-Tpurple-100 px-1">{agent}</h2>
+  <p class="response font-domine w-full h-full max-h-48 px-3 my-3 overflow-y-scroll">{response}</p>
 
   {#if hasSave}
-    <button on:click={save}>Save to History</button>
+    <button class="relative mt-auto bg-Tpurple-100 hover:bg-Tyellow-100 text-Tyellow-100 hover:text-Tpurple-100 font-inter px-2 rounded-full w-fit" on:click={save}>Save to History</button>
   {/if}
 </div>
 
-<style>
+<!-- <style>
   .completion {
     margin: 1rem;
     padding: 1rem;
@@ -51,4 +51,4 @@
   .response {
     font-size: 1rem;
   }
-</style>
+</style> -->

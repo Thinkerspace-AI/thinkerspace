@@ -33,7 +33,7 @@
   >Next</button
 >
 
-<style>
+<!-- <style>
   input {
     width: 100%;
     padding: 24px;
@@ -71,4 +71,4 @@
   button:active {
     scale: 1.1;
   }
-</style>
+</style> -->

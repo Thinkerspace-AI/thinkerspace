@@ -17,33 +17,33 @@
     }
 
     async function confirmSignOut() {
-        goto('/');
+        goto('/login');
         closeSignOutModal();
     }
 
 </script>
 
-{#if $page.url.pathname != "/"}
+{#if $page.url.pathname != "/login"}
     <nav class="fixed bg-Tpurple-100 w-full h-20 flex items-center justify-center">
         <img class="ml-4 mr-auto h-16 w-fit" src={light_logo} alt="logo" />
         <div class="ml-auto mr-4 w-fit">
             <ul class="flex flex-row flex-end items-center justify-center">
-                {#if $page.url.pathname != "/session-creation"}
+                {#if $page.url.pathname != "/new"}
                 <li class="text-Tyellow-100">
-                    <a href="/session-creation" class="bg-Tyellow-100 hover:bg-Tpurple-100 text-Tpurple-100 hover:text-Tyellow-100 font-inter py-2 px-3 my-2 mx-1 rounded-full w-fit">New Session</a>
+                    <a href="/new" class="bg-Tyellow-100 hover:bg-Tpurple-100 text-Tpurple-100 hover:text-Tyellow-100 font-inter py-2 px-3 my-2 mx-1 rounded-full w-fit">New Session</a>
                 </li>
                 {:else}
                 <li class="text-Tyellow-100">
-                    <a href="/session-creation" class="underline decoration-Tyellow-100 decoration-4 underline-offset-4 bg-Tpurple-100 hover:bg-Tyellow-100 text-Tyellow-100 hover:text-Tpurple-100 font-inter py-2 px-3 my-2 mx-1 rounded-full w-fit">New Session</a>
+                    <a href="/new" class="underline decoration-Tyellow-100 decoration-4 underline-offset-4 bg-Tpurple-100 hover:bg-Tyellow-100 text-Tyellow-100 hover:text-Tpurple-100 font-inter py-2 px-3 my-2 mx-1 rounded-full w-fit">New Session</a>
                 </li>
                 {/if}
-                {#if $page.url.pathname != "/session-select"}
+                {#if $page.url.pathname != "/sessions"}
                 <li class="text-Tyellow-100">
-                    <a href="/session-select" class="bg-Tyellow-100 hover:bg-Tpurple-100 text-Tpurple-100 hover:text-Tyellow-100 font-inter py-2 px-3 my-2 mx-1 rounded-full w-fit">Session List</a>
+                    <a href="/sessions" class="bg-Tyellow-100 hover:bg-Tpurple-100 text-Tpurple-100 hover:text-Tyellow-100 font-inter py-2 px-3 my-2 mx-1 rounded-full w-fit">Session List</a>
                 </li>
                 {:else}
                 <li class="text-Tyellow-100">
-                    <a href="/session-select" class="underline decoration-Tyellow-100 decoration-4 underline-offset-4 bg-Tpurple-100 hover:bg-Tyellow-100 text-Tyellow-100 hover:text-Tpurple-100 font-inter py-2 px-3 my-2 mx-1 rounded-full w-fit">Session List</a>
+                    <a href="/sessions" class="underline decoration-Tyellow-100 decoration-4 underline-offset-4 bg-Tpurple-100 hover:bg-Tyellow-100 text-Tyellow-100 hover:text-Tpurple-100 font-inter py-2 px-3 my-2 mx-1 rounded-full w-fit">Session List</a>
                 </li>
                 {/if}
                 <li class="text-Tyellow-100">
