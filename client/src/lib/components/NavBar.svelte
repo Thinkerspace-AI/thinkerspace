@@ -28,7 +28,11 @@
 </script>
 
 <nav class="fixed bg-Tpurple-100 w-full h-20 flex items-center justify-center">
+  {#if $page.url.pathname != "/"}
+  {#if $page.url.pathname != "/login"}
   <img class="ml-4 mr-auto h-16 w-fit" src={light_logo} alt="logo" />
+  {/if}
+  {/if}
   <div class="ml-auto mr-4 w-fit">
     <ul class="flex flex-row flex-end items-center justify-center">
       {#if $page.data.session?.user}
