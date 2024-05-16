@@ -16,6 +16,7 @@ from langserve.pydantic_v1 import BaseModel, Field
 
 from langchain_core.messages.human import HumanMessage
 from langchain_core.messages.ai import AIMessage
+from langchain_openai import ChatOpenAI
 
 from google.cloud import firestore
 from langchain_google_firestore import FirestoreChatMessageHistory
@@ -113,8 +114,8 @@ add_routes(
 @app.post("/create", status_code=201)
 async def create_session(request: SessionCreation):
     db = firestore.Client(project="geometric-sled-417002")
-    if not db.collection("users").document(request.user_id).get().exists:
-        raise HTTPException(404, detail="User not registered")
+    #if not db.collection("users").document(request.user_id).get().exists:
+    #    raise HTTPException(404, detail="User not registered")
     
     session_id = str(uuid.uuid4())
     
@@ -223,6 +224,27 @@ async def save_completion(request: SaveCompletion):
     for entry in [prompt_entry, completion_entry, not_picked_1_entry, not_picked_2_entry]:
         complete_history.add(entry)
     
+    # Generate a session title
+    llm = ChatOpenAI()
+    messages = (
+        db.collection("CompleteHistories")
+        .document(request.session_id)
+        .collection("Messages")
+        .order_by('timestamp', direction=firestore.Query.ASCENDING)
+        .stream()
+    )
+    history = " ".join([message.get('message') for message in messages])
+    title = llm.invoke(f"Generate a title for this topic: {history}").content
+
+    # Add session title to CompleteHistories
+    complete_history = db.collection("CompleteHistories").document(request.session_id)
+
+    complete_history.set(
+        {
+            "title": title
+        },
+        merge=True
+    )
 
 @app.post("/history")
 async def history(request: HistoryRequest):
@@ -233,6 +255,7 @@ async def history(request: HistoryRequest):
         )
     db = firestore.Client(project="geometric-sled-417002")
 
+    title = db.collection("CompleteHistories").document(request.session_id).get().get('title')
     entries = []
     messages = (
         db.collection("CompleteHistories")
@@ -250,7 +273,7 @@ async def history(request: HistoryRequest):
         }
         entries.append(entry)
     try:
-        return entries
+        return {'title': title, 'messages': entries}
     except:
         raise HTTPException(status_code=404)
     
@@ -301,8 +324,27 @@ async def get_sessions(request: SessionsRequest):
     )
     for session in sessions_ref:
         session: firestore.DocumentSnapshot
+        session_id = session.get('id')
+
+        messages = (
+            db.collection("CompleteHistories")
+            .document(session_id)
+            .collection("Messages")
+            .where('picked', '==', True)
+            .order_by('timestamp', direction=firestore.Query.DESCENDING)
+            .limit(1)
+            .stream()
+        )
+        
+        title = db.collection("CompleteHistories").document(session_id).get().get('title')
+        for message in messages:
+            last_message = message
+
         entry = {
-            'session_id': session.get('id'),
+            'session_id': session_id,
+            'title': title,
+            'last_message': last_message.get('message'),
+            'timestamp': last_message.get('timestamp')
         }
         sessions.append(entry)
     try:
