@@ -32,37 +32,20 @@
   <div class="ml-auto mr-4 w-fit">
     <ul class="flex flex-row flex-end items-center justify-center">
       {#if $page.data.session?.user}
-        {#if $page.url.pathname != "/new"}
+        {#if $page.url.pathname != "/profile"}
           <li class="text-Tyellow-100">
             <a
-              href="/new"
+              href="/profile"
               class="bg-Tyellow-100 hover:bg-Tpurple-100 text-Tpurple-100 hover:text-Tyellow-100 font-inter py-2 px-3 my-2 mx-1 rounded-full w-fit"
-              >New Session</a
+              >Profile</a
             >
           </li>
         {:else}
           <li class="text-Tyellow-100">
             <a
-              href="/new"
+              href="/profile"
               class="underline decoration-Tyellow-100 decoration-4 underline-offset-4 bg-Tpurple-100 hover:bg-Tyellow-100 text-Tyellow-100 hover:text-Tpurple-100 font-inter py-2 px-3 my-2 mx-1 rounded-full w-fit"
-              >New Session</a
-            >
-          </li>
-        {/if}
-        {#if $page.url.pathname != "/sessions"}
-          <li class="text-Tyellow-100">
-            <a
-              href="/sessions"
-              class="bg-Tyellow-100 hover:bg-Tpurple-100 text-Tpurple-100 hover:text-Tyellow-100 font-inter py-2 px-3 my-2 mx-1 rounded-full w-fit"
-              >Session List</a
-            >
-          </li>
-        {:else}
-          <li class="text-Tyellow-100">
-            <a
-              href="/sessions"
-              class="underline decoration-Tyellow-100 decoration-4 underline-offset-4 bg-Tpurple-100 hover:bg-Tyellow-100 text-Tyellow-100 hover:text-Tpurple-100 font-inter py-2 px-3 my-2 mx-1 rounded-full w-fit"
-              >Session List</a
+              >Profile</a
             >
           </li>
         {/if}
