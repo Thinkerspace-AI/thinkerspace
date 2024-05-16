@@ -6,7 +6,8 @@
   import { onMount } from "svelte";
 
   export let data: {
-    history: [agent: string, message: string, picked: boolean][];
+    title: string;
+    messages: [agent: string, message: string, picked: boolean][];
     agents: string[];
     id: string;
     session: Session;
@@ -22,7 +23,7 @@
   onMount(() => {
     // Retrieve stored agents and history
     let history: [string, string, boolean][][] = [];
-    let temp = data.history;
+    let temp = data.messages;
 
     while (temp.length) {
       history.push(temp.splice(0, agents.length + 1));
@@ -133,9 +134,12 @@
 
 <div class="session max-h-screen flex flex-col items-center">
   <div class="w-3/4 pb-2 h-screen flex flex-col justify-center">
-    <h1 class="font-bold font-inter text-2xl mt-4 pb-1 w-full text-center">Session</h1>
-    <p class="text-sm pb-1 w-full text-center">Session ID: {sessionId}</p>
-    <div bind:this={responses} class="responses bg-white w-full xl:h-1/2 2xl:h-3/5 overflow-y-scroll mt-2 mb-6 px-2 flex flex-col flex-end">
+    <h1 class="font-bold font-inter text-2xl mt-4 pb-1 w-full text-center">{data.title}</h1>
+    <!-- <p class="text-sm pb-1 w-full text-center">Session ID: {sessionId}</p> -->
+    <div
+      bind:this={responses}
+      class="responses bg-white w-full xl:h-1/2 2xl:h-3/5 overflow-y-scroll mt-2 mb-6 px-2 flex flex-col flex-end"
+    >
       <div class="mt-auto relative bottom-0 flex flex-col flex-end">
         {#each completions as completionSet}
           <div class="h-fit">
@@ -154,9 +158,17 @@
     </div>
 
     <div class="w-full h-fit flex items-center">
-      <textarea class="h-24 w-full resize-none text-justify p-2 overflow-y-scroll" bind:value={promptinput} placeholder="Enter your prompt" />
-      <div class="px-5 w- h-fit flex flex-col items-center justify-center h-fit">      
-        <button class="bg-Tpurple-100 hover:bg-Tyellow-100 outline outline-offset-1 outline-Tpurple-100 text-Tyellow-100 hover:text-Tpurple-100 font-inter py-2 px-4 my-2 mx-2 rounded-full w-fit" tabindex="-1" on:click={submit}>Submit</button>
+      <textarea
+        class="h-24 w-full resize-none text-justify p-2 overflow-y-scroll"
+        bind:value={promptinput}
+        placeholder="Enter your prompt"
+      />
+      <div class="px-5 w- h-fit flex flex-col items-center justify-center h-fit">
+        <button
+          class="bg-Tpurple-100 hover:bg-Tyellow-100 outline outline-offset-1 outline-Tpurple-100 text-Tyellow-100 hover:text-Tpurple-100 font-inter py-2 px-4 my-2 mx-2 rounded-full w-fit"
+          tabindex="-1"
+          on:click={submit}>Submit</button
+        >
       </div>
     </div>
   </div>
