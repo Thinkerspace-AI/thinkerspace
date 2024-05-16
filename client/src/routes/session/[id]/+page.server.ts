@@ -44,5 +44,8 @@ export const load: PageServerLoad = async (event) => {
   const history = await historyReq.json();
   const agents = (await agentsReq.json()).agents;
 
-  return { history, agents, session, id }
+  const title = history.title;
+  const messages = history.messages;
+
+  return { title, messages, agents, session, id }
 };
