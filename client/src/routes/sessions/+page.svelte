@@ -7,7 +7,7 @@
 </script>
 
 <div class="flex flex-col overflow-hidden h-screen max-h-screen">
-  <div class="m-auto w-fit h-2/3 flex flex-col items-center overflow-y-scroll">
+  <div class="m-auto m w-fit h-2/3 flex flex-col items-center overflow-y-scroll">
       <div class="mr-8">
         {#each sessions as session}
           <div class="flex h-fit flex-row items-center justify-center mb-3">
