@@ -46,36 +46,42 @@
       <div slot="submitButton">Sign out</div>
     </SignOut>
   {:else}
-    <h1>Log In</h1>
-    <!-- <SignIn provider="google">
-      <div slot="submitButton">Sign in with Google</div>
-    </SignIn>
-    <SignIn provider="github">
-      <div slot="submitButton">Sign in with GitHub</div>
-    </SignIn>
-    <SignIn provider="credentials">
-      <div slot="credentials">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required />
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" required />
+    <div class="grid grid-cols-2 h-fit w-2/5">
+      <div class="flex flex-col items-center h-full m-auto">
+        <h1 class="font-bold font-inter text-md pb-1">Log In</h1>
+        <!-- <SignIn provider="google">
+          <div slot="submitButton">Sign in with Google</div>
+        </SignIn>
+        <SignIn provider="github">
+          <div slot="submitButton">Sign in with GitHub</div>
+        </SignIn>
+        <SignIn provider="credentials">
+          <div slot="credentials">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required />
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required />
+          </div>
+          <div slot="submitButton">Sign in with email</div>
+        </SignIn> -->
+        <SignIn>
+          <div class="mt-4 bg-Tpurple-100 hover:bg-Tyellow-100 outline outline-offset-1 outline-Tpurple-100 text-Tyellow-100 hover:text-Tpurple-100 text-md font-inter py-1 px-3 rounded-full w-fit" slot="submitButton">Sign in</div>
+        </SignIn>
       </div>
-      <div slot="submitButton">Sign in with email</div>
-    </SignIn> -->
-    <SignIn>
-      <div slot="submitButton">Sign in</div>
-    </SignIn>
-    <h2>Register</h2>
-    <form>
-      <label for="email">Email</label>
-      <input type="email" id="email" bind:value={email} />
+      <div class="flex flex-col items-center justify-center h-full m-auto">
+        <h1 class="font-bold font-inter text-md pb-1">Register</h1>
+        <form class="flex flex-col items-center h-fit">
+          <label class="mt-1 text-Tpurple-100 text-md font-inter w-fit" for="email">Email</label>
+          <input class="w-56" type="email" id="email" bind:value={email} />
 
-      <label for="password">Password</label>
-      <input type="password" id="password" bind:value={password} />
+          <label class="mt-1 text-Tpurple-100 text-md font-inter w-fit" for="password">Password</label>
+          <input class="w-56" type="password" id="password" bind:value={password} />
 
-      <button type="submit" on:click={register}>Register</button>
+          <button class="mt-4 bg-Tpurple-100 hover:bg-Tyellow-100 outline outline-offset-1 outline-Tpurple-100 text-Tyellow-100 hover:text-Tpurple-100 text-md font-inter py-1 px-3 rounded-full w-fit" type="submit" on:click={register}>Register</button>
 
-      <p bind:this={statusMessage}></p>
-    </form>
+          <p class="mt-2" bind:this={statusMessage}></p>
+        </form>
+      </div>
+    </div>
   {/if}
 </div>
